@@ -18,9 +18,9 @@ export function AuthSubmitButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="w-full relative overflow-hidden bg-[#47b8ff] hover:bg-[#6fc8ff] disabled:bg-[#0f1e2e] disabled:text-[#2a4a6a] text-white font-black text-[15px] tracking-[-0.01em] py-[14px] rounded-[16px] transition-all duration-200 disabled:cursor-not-allowed"
+      className="w-full relative overflow-hidden bg-[#3a9fe0] hover:bg-[#4daef0] disabled:bg-[#0f1e2e] disabled:text-[#2a4a6a] text-white font-black text-[15px] tracking-[-0.01em] py-[14px] rounded-[16px] transition-all duration-200 disabled:cursor-not-allowed"
       style={{
-        boxShadow: disabled ? "none" : "0 0 28px rgba(71,184,255,0.25)",
+        boxShadow: disabled ? "none" : "0 0 24px rgba(71,184,255,0.15)",
       }}
     >
       {isPending ? (

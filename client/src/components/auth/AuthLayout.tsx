@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 interface AuthLayoutProps {
   children: React.ReactNode;
   onBack?: () => void;
+  hideBack?: boolean;
 }
 
-export function AuthLayout({ children, onBack }: AuthLayoutProps) {
+export function AuthLayout({ children, onBack, hideBack }: AuthLayoutProps) {
   const navigate = useNavigate();
 
   return (
@@ -23,23 +24,26 @@ export function AuthLayout({ children, onBack }: AuthLayoutProps) {
       />
 
       <div className="w-full max-w-[400px] mx-auto relative z-10 pt-[max(env(safe-area-inset-top),16px)] pb-10">
-        <button
-          onClick={onBack ?? (() => navigate(-1))}
-          className="mt-2 mb-8 flex items-center gap-2 text-[#44445a] hover:text-[#f0f0f5] transition-colors duration-150 group"
-        >
-          <div className="w-8 h-8 rounded-[10px] bg-[#111116] border border-[#1e1e28] flex items-center justify-center group-hover:border-[#2a2a38] transition-colors">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M9 2L4 7l5 5"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <span className="text-[13px] font-semibold">Back</span>
-        </button>
+        {!hideBack && (
+          <button
+            onClick={onBack ?? (() => navigate(-1))}
+            className="mt-2 mb-8 flex items-center gap-2 text-[#44445a] hover:text-[#f0f0f5] transition-colors duration-150 group"
+          >
+            <div className="w-8 h-8 rounded-[10px] bg-[#111116] border border-[#1e1e28] flex items-center justify-center group-hover:border-[#2a2a38] transition-colors">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path
+                  d="M9 2L4 7l5 5"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <span className="text-[13px] font-semibold">Back</span>
+          </button>
+        )}
+        {hideBack && <div className="mt-2 mb-8 h-8" />}
 
         {children}
       </div>

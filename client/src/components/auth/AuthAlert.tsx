@@ -18,11 +18,11 @@ const config = {
   success: {
     bg: "bg-[rgba(71,184,255,0.08)]",
     border: "border-[rgba(71,184,255,0.2)]",
-    text: "text-[#47b8ff]",
+    text: "text-[#3da1d4]",
     icon: (
       <>
-        <circle cx="8" cy="8" r="7" stroke="#47b8ff" strokeWidth="1.5" />
-        <path d="M5 8l2 2 4-4" stroke="#47b8ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="8" cy="8" r="7" stroke="#3da1d4" strokeWidth="1.5" />
+        <path d="M5 8l2 2 4-4" stroke="#3da1d4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </>
     ),
   },
