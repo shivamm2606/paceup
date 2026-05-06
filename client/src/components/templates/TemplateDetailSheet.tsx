@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useCreateSession } from "../../hooks/sessions/useCreateSession";
 import { useDeleteTemplate } from "../../hooks/workoutTemplate/useDeleteTemplate";
 import { getMuscleColor, formatMuscle } from "./templateUtils";
-import type { WorkoutTemplate, PopulatedExercise } from "../../types/workoutTemplate.types";
+import type {
+  WorkoutTemplate,
+  PopulatedExercise,
+} from "../../types/workoutTemplate.types";
 
 interface Props {
   template: WorkoutTemplate;
@@ -12,7 +15,12 @@ interface Props {
   onEdit?: (template: WorkoutTemplate) => void;
 }
 
-export function TemplateDetailSheet({ template, isOwner, onClose, onEdit }: Props) {
+export function TemplateDetailSheet({
+  template,
+  isOwner,
+  onClose,
+  onEdit,
+}: Props) {
   const navigate = useNavigate();
   const { mutate: createSession, isPending } = useCreateSession();
   const { mutate: deleteTemplate, isPending: isDeleting } = useDeleteTemplate();
@@ -72,7 +80,8 @@ export function TemplateDetailSheet({ template, isOwner, onClose, onEdit }: Prop
               {template.name}
             </h2>
             <p className="text-[12px] text-[#6b6b80] mt-1.5">
-              {template.exercises.length} exercise{template.exercises.length !== 1 ? "s" : ""}
+              {template.exercises.length} exercise
+              {template.exercises.length !== 1 ? "s" : ""}
             </p>
           </div>
 
@@ -108,7 +117,13 @@ export function TemplateDetailSheet({ template, isOwner, onClose, onEdit }: Prop
               className="w-9 h-9 rounded-[12px] bg-[#13131a] border border-[#1e1e28] flex items-center justify-center text-[#8b8b9a] hover:text-[#f0f0f5] transition-colors"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M18 6L6 18M6 6l12 12"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
           </div>
@@ -119,7 +134,9 @@ export function TemplateDetailSheet({ template, isOwner, onClose, onEdit }: Prop
           <div className="flex flex-col gap-[1px]">
             {template.exercises.map((ex, i) => {
               const populated =
-                typeof ex.exerciseId === "object" ? (ex.exerciseId as PopulatedExercise) : null;
+                typeof ex.exerciseId === "object"
+                  ? (ex.exerciseId as PopulatedExercise)
+                  : null;
               const muscle = populated?.muscleGroup ?? "";
               const muscleColor = getMuscleColor(muscle);
 
@@ -140,7 +157,11 @@ export function TemplateDetailSheet({ template, isOwner, onClose, onEdit }: Prop
                       {muscle && (
                         <span
                           className="text-[8.5px] font-bold tracking-[0.04em] uppercase px-[6px] py-[1.5px] rounded-[5px] border"
-                          style={{ background: muscleColor.bg, color: muscleColor.text, borderColor: muscleColor.border }}
+                          style={{
+                            background: muscleColor.bg,
+                            color: muscleColor.text,
+                            borderColor: muscleColor.border,
+                          }}
                         >
                           {formatMuscle(muscle)}
                         </span>
@@ -198,7 +219,10 @@ export function TemplateDetailSheet({ template, isOwner, onClose, onEdit }: Prop
           )}
 
           {!confirmDelete && (
-            <div className="flex gap-2.5" style={{ animation: "fadeSlideUp 0.2s ease-out" }}>
+            <div
+              className="flex gap-2.5"
+              style={{ animation: "fadeSlideUp 0.2s ease-out" }}
+            >
               {/* Delete button — owner only */}
               {isOwner && (
                 <button
@@ -224,9 +248,10 @@ export function TemplateDetailSheet({ template, isOwner, onClose, onEdit }: Prop
                 className={`
                   flex-1 py-[15px] rounded-[14px] text-[15px] font-extrabold tracking-tight
                   transition-all duration-150
-                  ${isLoading
-                    ? "bg-[#4ade80]/40 text-[#0b0b10]/60 cursor-not-allowed"
-                    : "bg-[#4ade80] text-[#0b0b10] hover:bg-[#5eebb0] active:scale-[0.98]"
+                  ${
+                    isLoading
+                      ? "bg-[#4ade80]/40 text-[#0b0b10]/60 cursor-not-allowed"
+                      : "bg-[#4ade80] text-[#0b0b10] hover:bg-[#5eebb0] active:scale-[0.98]"
                   }
                 `}
               >

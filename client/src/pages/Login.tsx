@@ -10,30 +10,79 @@ import { AuthAlert } from "../components/auth/AuthAlert";
 
 const EyeOpen = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    <path
+      d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
     <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8" />
   </svg>
 );
 
 const EyeClosed = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    <line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    <path
+      d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+    <path
+      d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+    <line
+      x1="1"
+      y1="1"
+      x2="23"
+      y2="23"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
 const EmailIcon = () => (
   <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
-    <rect x="2" y="4" width="16" height="12" rx="2" stroke="#44445a" strokeWidth="1.5" />
-    <path d="M2 7l8 5 8-5" stroke="#44445a" strokeWidth="1.5" strokeLinecap="round" />
+    <rect
+      x="2"
+      y="4"
+      width="16"
+      height="12"
+      rx="2"
+      stroke="#44445a"
+      strokeWidth="1.5"
+    />
+    <path
+      d="M2 7l8 5 8-5"
+      stroke="#44445a"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
 const LockIcon = () => (
   <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
-    <rect x="3" y="9" width="14" height="10" rx="2" stroke="#44445a" strokeWidth="1.6" />
-    <path d="M7 9V6a3 3 0 016 0v3" stroke="#44445a" strokeWidth="1.6" strokeLinecap="round" />
+    <rect
+      x="3"
+      y="9"
+      width="14"
+      height="10"
+      rx="2"
+      stroke="#44445a"
+      strokeWidth="1.6"
+    />
+    <path
+      d="M7 9V6a3 3 0 016 0v3"
+      stroke="#44445a"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -54,11 +103,22 @@ function Login() {
       <AuthHeader
         icon={
           <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-            <path d="M2 13h3M21 13h3M6 8v10M20 8v10M3 10v6M23 10v6M6 13h14" stroke="#3da1d4" strokeWidth="1.8" strokeLinecap="round" />
+            <path
+              d="M2 13h3M21 13h3M6 8v10M20 8v10M3 10v6M23 10v6M6 13h14"
+              stroke="#3da1d4"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
           </svg>
         }
         subtitle="Welcome back"
-        title={<>Log back<br /><span className="text-[#3da1d4]">into RepUp.</span></>}
+        title={
+          <>
+            Log back
+            <br />
+            <span className="text-[#3da1d4]">into RepUp.</span>
+          </>
+        }
         description="Your streaks, PRs, and progress are waiting."
       />
 

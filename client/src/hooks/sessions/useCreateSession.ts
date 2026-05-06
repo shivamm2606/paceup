@@ -7,11 +7,10 @@ export const useCreateSession = () => {
 
   return useMutation({
     mutationFn: (data: CreateSessionPayload) =>
-      api.post("/workout-session", data).then((r) => r.data),
+      api.post("/workout-session", data).then((r) => r.data.data),
 
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["AllWorkoutSessions"] });
-      return response.data;
     },
   });
 };

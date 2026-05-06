@@ -32,23 +32,35 @@ const TIME_RANGES: { key: TimeRange; label: string; days: number }[] = [
 
 // helper
 
-function convertWeight(weight: number, from: WeightUnit, to: WeightUnit): number {
+function convertWeight(
+  weight: number,
+  from: WeightUnit,
+  to: WeightUnit,
+): number {
   if (from === to) return weight;
   return +(from === "kg" ? weight * KG_TO_LBS : weight / KG_TO_LBS).toFixed(1);
 }
 
 function formatShortDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  return new Date(dateStr).toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+  });
 }
 
 function formatFullDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString(undefined, {
-    weekday: "short", day: "numeric", month: "short", year: "numeric",
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
   });
 }
 
 function sortByDateAsc(logs: IBodyweightLog[]) {
-  return [...logs].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  return [...logs].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
 }
 
 function filterByDays(logs: IBodyweightLog[], days: number) {
@@ -76,22 +88,33 @@ function Bodyweight() {
   const allLogs = useMemo(() => sortByDateAsc(entries), [entries]);
 
   const days = TIME_RANGES.find((r) => r.key === timeRange)?.days ?? Infinity;
-  const filteredLogs = useMemo(() => filterByDays(allLogs, days), [allLogs, days]);
+  const filteredLogs = useMemo(
+    () => filterByDays(allLogs, days),
+    [allLogs, days],
+  );
 
-  const chartData = useMemo(() => filteredLogs.map((log) => ({
-    weight: convertWeight(log.weight, log.unit, unit),
-    label: formatShortDate(log.date),
-    fullDate: formatFullDate(log.date),
-  })), [filteredLogs, unit]);
+  const chartData = useMemo(
+    () =>
+      filteredLogs.map((log) => ({
+        weight: convertWeight(log.weight, log.unit, unit),
+        label: formatShortDate(log.date),
+        fullDate: formatFullDate(log.date),
+      })),
+    [filteredLogs, unit],
+  );
 
   const weightDelta = useMemo(() => {
     if (chartData.length < 2) return null;
-    return +(chartData[chartData.length - 1].weight - chartData[0].weight).toFixed(1);
+    return +(
+      chartData[chartData.length - 1].weight - chartData[0].weight
+    ).toFixed(1);
   }, [chartData]);
 
   const recentLogs = entries.slice(0, 20);
   const latestEntry = recentLogs[0];
-  const latestWeight = latestEntry ? convertWeight(latestEntry.weight, latestEntry.unit, unit) : undefined;
+  const latestWeight = latestEntry
+    ? convertWeight(latestEntry.weight, latestEntry.unit, unit)
+    : undefined;
 
   // Actions
   const handleLog = () => {
@@ -118,19 +141,33 @@ function Bodyweight() {
             className="w-8 h-8 rounded-[10px] bg-[#13131a] border border-[#1e1e28] flex items-center justify-center text-[#8b8b9a] hover:text-[#f0f0f5] transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M15 18l-6-6 6-6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
           <div>
-            <p className="text-[11px] font-bold text-[#44445a] tracking-[0.1em] uppercase">Tracking</p>
-            <h1 className="text-[26px] font-black text-[#f0f0f5] tracking-[-0.04em] leading-[1.1] m-0">Bodyweight</h1>
+            <p className="text-[11px] font-bold text-[#44445a] tracking-[0.1em] uppercase">
+              Tracking
+            </p>
+            <h1 className="text-[26px] font-black text-[#f0f0f5] tracking-[-0.04em] leading-[1.1] m-0">
+              Bodyweight
+            </h1>
           </div>
         </div>
       </div>
 
       <div className="space-y-5 px-5 pt-3">
         {/* Current Weight Hero */}
-        <HeroCard latestWeight={latestWeight} unit={unit} weightDelta={weightDelta} />
+        <HeroCard
+          latestWeight={latestWeight}
+          unit={unit}
+          weightDelta={weightDelta}
+        />
 
         {/* Chart */}
         <div>
@@ -151,7 +188,10 @@ function Bodyweight() {
 
           <div className="mb-3">
             <SegmentedControl
-              options={[{ key: "kg", label: "kg" }, { key: "lbs", label: "lbs" }]}
+              options={[
+                { key: "kg", label: "kg" },
+                { key: "lbs", label: "lbs" },
+              ]}
               selected={unit}
               onChange={(key) => setUnit(key as WeightUnit)}
             />
@@ -208,7 +248,11 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function SegmentedControl({ options, selected, onChange }: {
+function SegmentedControl({
+  options,
+  selected,
+  onChange,
+}: {
   options: { key: string; label: string }[];
   selected: string;
   onChange: (key: string) => void;
@@ -232,34 +276,50 @@ function SegmentedControl({ options, selected, onChange }: {
   );
 }
 
-function HeroCard({ latestWeight, unit, weightDelta }: {
+function HeroCard({
+  latestWeight,
+  unit,
+  weightDelta,
+}: {
   latestWeight?: number;
   unit: string;
   weightDelta: number | null;
 }) {
-  const deltaColor = !weightDelta ? ""
-    : weightDelta > 0 ? "bg-[rgba(239,68,68,0.08)] text-[#ef4444]"
-    : weightDelta < 0 ? "bg-[rgba(74,222,128,0.08)] text-[#4ade80]"
-    : "bg-[rgba(139,139,154,0.08)] text-[#8b8b9a]";
+  const deltaColor = !weightDelta
+    ? ""
+    : weightDelta > 0
+      ? "bg-[rgba(239,68,68,0.08)] text-[#ef4444]"
+      : weightDelta < 0
+        ? "bg-[rgba(74,222,128,0.08)] text-[#4ade80]"
+        : "bg-[rgba(139,139,154,0.08)] text-[#8b8b9a]";
 
   return (
     <div className="relative bg-[#121216] border border-[#1a1a20] rounded-[18px] p-5 overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_rgba(74,222,128,0.04)_0%,_transparent_60%)] pointer-events-none" />
       <div className="relative flex items-end justify-between">
         <div>
-          <p className="text-[11px] font-bold text-[#55556a] tracking-[0.06em] uppercase mb-2">Current Weight</p>
+          <p className="text-[11px] font-bold text-[#55556a] tracking-[0.06em] uppercase mb-2">
+            Current Weight
+          </p>
           <div className="flex items-baseline gap-1.5">
             <p className="text-[36px] font-black text-[#f0f0f5] tabular-nums leading-none">
               {latestWeight ?? "—"}
             </p>
-            {latestWeight && <span className="text-[14px] font-semibold text-[#55556a]">{unit}</span>}
+            {latestWeight && (
+              <span className="text-[14px] font-semibold text-[#55556a]">
+                {unit}
+              </span>
+            )}
           </div>
         </div>
         {weightDelta !== null && (
-          <div className={`flex items-center gap-1 px-2.5 py-1.5 rounded-[8px] ${deltaColor}`}>
+          <div
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-[8px] ${deltaColor}`}
+          >
             <DeltaArrow delta={weightDelta} />
             <span className="text-[12px] font-extrabold tabular-nums">
-              {weightDelta > 0 ? "+" : ""}{weightDelta} {unit}
+              {weightDelta > 0 ? "+" : ""}
+              {weightDelta} {unit}
             </span>
           </div>
         )}
@@ -271,11 +331,18 @@ function HeroCard({ latestWeight, unit, weightDelta }: {
 function DeltaArrow({ delta }: { delta: number }) {
   return (
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-      {delta > 0
-        ? <path d="M5 2l3.5 5H1.5L5 2z" fill="currentColor" />
-        : delta < 0
-          ? <path d="M5 8L1.5 3h7L5 8z" fill="currentColor" />
-          : <path d="M1 5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />}
+      {delta > 0 ? (
+        <path d="M5 2l3.5 5H1.5L5 2z" fill="currentColor" />
+      ) : delta < 0 ? (
+        <path d="M5 8L1.5 3h7L5 8z" fill="currentColor" />
+      ) : (
+        <path
+          d="M1 5h8"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      )}
     </svg>
   );
 }
@@ -285,7 +352,9 @@ function WeightChart({ chartData, unit }: { chartData: any[]; unit: string }) {
     return (
       <div className="bg-[#121216] border border-[#1a1a20] rounded-[16px] p-4">
         <div className="h-[180px] flex items-center justify-center">
-          <p className="text-[13px] text-[#44445a]">Need at least 2 entries to show a trend</p>
+          <p className="text-[13px] text-[#44445a]">
+            Need at least 2 entries to show a trend
+          </p>
         </div>
       </div>
     );
@@ -295,32 +364,58 @@ function WeightChart({ chartData, unit }: { chartData: any[]; unit: string }) {
     <div className="bg-[#121216] border border-[#1a1a20] rounded-[16px] p-4 overflow-hidden">
       <div className="h-[180px]">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+          <AreaChart
+            data={chartData}
+            margin={{ top: 4, right: 4, bottom: 0, left: -20 }}
+          >
             <defs>
               <linearGradient id="weightGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#4ade80" stopOpacity={0.2} />
                 <stop offset="100%" stopColor="#4ade80" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1a1a24" vertical={false} />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="#1a1a24"
+              vertical={false}
+            />
             <XAxis
               dataKey="label"
               tick={{ fontSize: 10, fill: "#55556a", fontWeight: 600 }}
-              axisLine={false} tickLine={false}
-              interval="preserveStartEnd" minTickGap={30}
+              axisLine={false}
+              tickLine={false}
+              interval="preserveStartEnd"
+              minTickGap={30}
             />
             <YAxis
               tick={{ fontSize: 10, fill: "#55556a", fontWeight: 600 }}
-              axisLine={false} tickLine={false}
-              domain={["dataMin - 1", "dataMax + 1"]} tickCount={5}
+              axisLine={false}
+              tickLine={false}
+              domain={["dataMin - 1", "dataMax + 1"]}
+              tickCount={5}
             />
-            <Tooltip content={<ChartTooltip displayUnit={unit} />} trigger="click" />
+            <Tooltip
+              content={<ChartTooltip displayUnit={unit} />}
+              trigger="click"
+            />
             <Area
-              type="monotone" dataKey="weight"
-              stroke="#4ade80" strokeWidth={2}
+              type="monotone"
+              dataKey="weight"
+              stroke="#4ade80"
+              strokeWidth={2}
               fill="url(#weightGradient)"
-              dot={{ r: 3, fill: "#4ade80", stroke: "#121216", strokeWidth: 1.5 }}
-              activeDot={{ r: 6, stroke: "#4ade80", strokeWidth: 2, fill: "#121216" }}
+              dot={{
+                r: 3,
+                fill: "#4ade80",
+                stroke: "#121216",
+                strokeWidth: 1.5,
+              }}
+              activeDot={{
+                r: 6,
+                stroke: "#4ade80",
+                strokeWidth: 2,
+                fill: "#121216",
+              }}
             />
           </AreaChart>
         </ResponsiveContainer>
@@ -334,16 +429,24 @@ function ChartTooltip({ active, payload, displayUnit }: any) {
   const data = payload[0].payload;
   return (
     <div className="bg-[#1a1a24] border border-[#24242e] rounded-[10px] px-3 py-2 shadow-xl">
-      <p className="text-[11px] font-semibold text-[#8b8b9a] mb-0.5">{data.fullDate}</p>
+      <p className="text-[11px] font-semibold text-[#8b8b9a] mb-0.5">
+        {data.fullDate}
+      </p>
       <p className="text-[16px] font-extrabold text-[#f0f0f5] tabular-nums">
         {data.weight}
-        <span className="text-[11px] font-semibold text-[#55556a] ml-1">{displayUnit}</span>
+        <span className="text-[11px] font-semibold text-[#55556a] ml-1">
+          {displayUnit}
+        </span>
       </p>
     </div>
   );
 }
 
-function HistoryList({ logs, deletingId, onDelete }: {
+function HistoryList({
+  logs,
+  deletingId,
+  onDelete,
+}: {
   logs: IBodyweightLog[];
   deletingId: string | null;
   onDelete: (id: string) => void;
@@ -351,10 +454,23 @@ function HistoryList({ logs, deletingId, onDelete }: {
   if (logs.length === 0) {
     return (
       <div className="bg-[#121216] border border-[#1a1a20] rounded-[14px] p-6 flex flex-col items-center justify-center gap-2">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-[#2a2a38]">
-          <path d="M12 2v20M2 12h20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          className="text-[#2a2a38]"
+        >
+          <path
+            d="M12 2v20M2 12h20"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
         </svg>
-        <p className="text-[13px] text-[#44445a]">No entries yet — log your first weigh-in above</p>
+        <p className="text-[13px] text-[#44445a]">
+          No entries yet — log your first weigh-in above
+        </p>
       </div>
     );
   }
@@ -372,9 +488,14 @@ function HistoryList({ logs, deletingId, onDelete }: {
           >
             <div>
               <p className="text-[14px] font-bold text-[#f0f0f5] tabular-nums">
-                {log.weight} <span className="text-[11px] font-semibold text-[#6b6b80]">{log.unit}</span>
+                {log.weight}{" "}
+                <span className="text-[11px] font-semibold text-[#6b6b80]">
+                  {log.unit}
+                </span>
               </p>
-              <p className="text-[11px] text-[#44445a] mt-0.5">{formatFullDate(log.date)}</p>
+              <p className="text-[11px] text-[#44445a] mt-0.5">
+                {formatFullDate(log.date)}
+              </p>
             </div>
             <button
               onClick={() => onDelete(log._id)}

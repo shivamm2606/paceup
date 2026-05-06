@@ -63,12 +63,25 @@ export function LogBodyweightSheet({ onClose }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between px-1.5 pt-2.5 pb-5 shrink-0">
           <div>
-            <p className="text-[11px] font-bold text-[#44445a] tracking-[0.1em] uppercase mb-1.5">Tracking</p>
-            <h2 className="text-[24px] font-black text-[#f0f0f5] tracking-[-0.04em] leading-[1.1] m-0">Log Bodyweight</h2>
+            <p className="text-[11px] font-bold text-[#44445a] tracking-[0.1em] uppercase mb-1.5">
+              Tracking
+            </p>
+            <h2 className="text-[24px] font-black text-[#f0f0f5] tracking-[-0.04em] leading-[1.1] m-0">
+              Log Bodyweight
+            </h2>
           </div>
-          <button onClick={handleClose} className="w-9 h-9 rounded-[12px] bg-[#13131a] border border-[#1e1e28] flex items-center justify-center text-[#8b8b9a] hover:text-[#f0f0f5] transition-colors">
+          <button
+            onClick={handleClose}
+            className="w-9 h-9 rounded-[12px] bg-[#13131a] border border-[#1e1e28] flex items-center justify-center text-[#8b8b9a] hover:text-[#f0f0f5] transition-colors"
+          >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M18 6L6 18M6 6l12 12"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         </div>
@@ -81,7 +94,9 @@ export function LogBodyweightSheet({ onClose }: Props) {
                 key={u}
                 onClick={() => setUnit(u)}
                 className={`px-4 py-[6px] rounded-[8px] text-[12px] font-extrabold tracking-[0.02em] transition-all duration-150 ${
-                  unit === u ? "bg-[#1e1e28] text-[#f0f0f5] shadow-sm" : "text-[#55556a] hover:text-[#8b8b9a]"
+                  unit === u
+                    ? "bg-[#1e1e28] text-[#f0f0f5] shadow-sm"
+                    : "text-[#55556a] hover:text-[#8b8b9a]"
                 }`}
               >
                 {u}
@@ -103,7 +118,9 @@ export function LogBodyweightSheet({ onClose }: Props) {
               className="w-full bg-[#13131a] border border-[#1e1e28] rounded-[12px] px-4 py-[12px] text-[14px] text-[#f0f0f5] placeholder-[#44445a] outline-none focus:border-[#2a2a38] transition-colors pr-12"
               onKeyDown={(e) => e.key === "Enter" && handleLog()}
             />
-            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[11px] font-bold text-[#44445a]">{unit}</span>
+            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[11px] font-bold text-[#44445a]">
+              {unit}
+            </span>
           </div>
           <button
             onClick={handleLog}
@@ -120,14 +137,29 @@ export function LogBodyweightSheet({ onClose }: Props) {
 
         {/* Recent Logs */}
         <div className="overflow-y-auto flex-1 mt-5 -mx-1.5 px-1.5">
-          <p className="text-[11px] font-bold text-[#44445a] tracking-[0.08em] uppercase mb-2.5">Recent Entries</p>
+          <p className="text-[11px] font-bold text-[#44445a] tracking-[0.08em] uppercase mb-2.5">
+            Recent Entries
+          </p>
 
           {recentLogs.length === 0 ? (
             <div className="bg-[#121216] border border-[#1a1a20] rounded-[14px] p-6 flex flex-col items-center justify-center gap-2">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-[#2a2a38]">
-                <path d="M12 2v20M2 12h20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="text-[#2a2a38]"
+              >
+                <path
+                  d="M12 2v20M2 12h20"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
               </svg>
-              <p className="text-[13px] text-[#44445a]">No entries yet — log your first weigh-in above</p>
+              <p className="text-[13px] text-[#44445a]">
+                No entries yet — log your first weigh-in above
+              </p>
             </div>
           ) : (
             <div className="bg-[#121216] border border-[#1a1a20] rounded-[14px] overflow-hidden">
@@ -140,10 +172,17 @@ export function LogBodyweightSheet({ onClose }: Props) {
                 >
                   <div>
                     <p className="text-[14px] font-bold text-[#f0f0f5] tabular-nums">
-                      {log.weight} <span className="text-[11px] font-semibold text-[#6b6b80]">{log.unit}</span>
+                      {log.weight}{" "}
+                      <span className="text-[11px] font-semibold text-[#6b6b80]">
+                        {log.unit}
+                      </span>
                     </p>
                     <p className="text-[11px] text-[#44445a] mt-0.5">
-                      {new Date(log.date).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}
+                      {new Date(log.date).toLocaleDateString(undefined, {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </p>
                   </div>
                   <button

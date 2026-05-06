@@ -12,7 +12,9 @@ export const TemplateSelector = ({ onBack, onClose }: Props) => {
   const { data: templates, isLoading, isError } = useGetTemplates();
   const { mutate: createSession, isPending } = useCreateSession();
   const navigate = useNavigate();
-  const [pendingTemplateId, setPendingTemplateId] = useState<string | null>(null);
+  const [pendingTemplateId, setPendingTemplateId] = useState<string | null>(
+    null,
+  );
 
   const handleSelectTemplate = (templateId: string) => {
     setPendingTemplateId(templateId);
@@ -94,67 +96,62 @@ export const TemplateSelector = ({ onBack, onClose }: Props) => {
             </div>
           )}
 
-          {!isLoading &&
-            !isError &&
-            (!templates || templates.length === 0) && (
-              <div className="flex flex-col items-center justify-center py-16 gap-2">
-                <div className="w-12 h-12 rounded-2xl bg-[#13131a] border border-[#1e1e28] flex items-center justify-center mb-2">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <rect
-                      x="3"
-                      y="3"
-                      width="8"
-                      height="8"
-                      rx="2"
-                      stroke="#44445a"
-                      strokeWidth="1.8"
-                    />
-                    <rect
-                      x="13"
-                      y="3"
-                      width="8"
-                      height="8"
-                      rx="2"
-                      stroke="#44445a"
-                      strokeWidth="1.8"
-                    />
-                    <rect
-                      x="3"
-                      y="13"
-                      width="8"
-                      height="8"
-                      rx="2"
-                      stroke="#44445a"
-                      strokeWidth="1.8"
-                    />
-                    <rect
-                      x="13"
-                      y="13"
-                      width="8"
-                      height="8"
-                      rx="2"
-                      stroke="#44445a"
-                      strokeWidth="1.8"
-                    />
-                  </svg>
-                </div>
-                <p className="text-[14px] font-bold text-[#f0f0f5]">
-                  No templates yet
-                </p>
-                <p className="text-[12px] text-[#44445a] text-center">
-                  Create templates to start workouts faster
-                </p>
+          {!isLoading && !isError && (!templates || templates.length === 0) && (
+            <div className="flex flex-col items-center justify-center py-16 gap-2">
+              <div className="w-12 h-12 rounded-2xl bg-[#13131a] border border-[#1e1e28] flex items-center justify-center mb-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <rect
+                    x="3"
+                    y="3"
+                    width="8"
+                    height="8"
+                    rx="2"
+                    stroke="#44445a"
+                    strokeWidth="1.8"
+                  />
+                  <rect
+                    x="13"
+                    y="3"
+                    width="8"
+                    height="8"
+                    rx="2"
+                    stroke="#44445a"
+                    strokeWidth="1.8"
+                  />
+                  <rect
+                    x="3"
+                    y="13"
+                    width="8"
+                    height="8"
+                    rx="2"
+                    stroke="#44445a"
+                    strokeWidth="1.8"
+                  />
+                  <rect
+                    x="13"
+                    y="13"
+                    width="8"
+                    height="8"
+                    rx="2"
+                    stroke="#44445a"
+                    strokeWidth="1.8"
+                  />
+                </svg>
               </div>
-            )}
+              <p className="text-[14px] font-bold text-[#f0f0f5]">
+                No templates yet
+              </p>
+              <p className="text-[12px] text-[#44445a] text-center">
+                Create templates to start workouts faster
+              </p>
+            </div>
+          )}
 
-          {!isLoading &&
-            !isError &&
-            templates &&
-            templates.length > 0 && (
-              <div className="flex flex-col gap-3 pb-10">
-                {templates.map((template) => {
-                  const isThisPending = pendingTemplateId === template._id;
-                  return (
+          {!isLoading && !isError && templates && templates.length > 0 && (
+            <div className="flex flex-col gap-3 pb-10">
+              {templates.map((template) => {
+                const isThisPending = pendingTemplateId === template._id;
+                return (
                   <button
                     key={template._id}
                     onClick={() => handleSelectTemplate(template._id)}
@@ -173,33 +170,50 @@ export const TemplateSelector = ({ onBack, onClose }: Props) => {
                       </div>
                       <div className="w-7 h-7 rounded-[9px] bg-[#1a1a24] border border-[#24242e] flex items-center justify-center shrink-0">
                         {isThisPending ? (
-                          <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none">
-                            <circle cx="12" cy="12" r="10" stroke="#44445a" strokeWidth="2.5" />
-                            <path d="M12 2a10 10 0 0 1 10 10" stroke="#7b9dff" strokeWidth="2.5" strokeLinecap="round" />
+                          <svg
+                            className="animate-spin"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                          >
+                            <circle
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="#44445a"
+                              strokeWidth="2.5"
+                            />
+                            <path
+                              d="M12 2a10 10 0 0 1 10 10"
+                              stroke="#7b9dff"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                            />
                           </svg>
                         ) : (
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                        >
-                          <path
-                            d="M3 7h8M7 3l4 4-4 4"
-                            stroke="#55556a"
-                            strokeWidth="1.8"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
+                          <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 14 14"
+                            fill="none"
+                          >
+                            <path
+                              d="M3 7h8M7 3l4 4-4 4"
+                              stroke="#55556a"
+                              strokeWidth="1.8"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
                         )}
                       </div>
                     </div>
                   </button>
-                  );
-                })}
-              </div>
-            )}
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>

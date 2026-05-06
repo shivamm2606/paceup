@@ -148,7 +148,10 @@ class MongoWorkoutSessionService implements IWorkoutSessionService {
     sessionId: string,
     userId: string,
   ): Promise<IWorkoutSession | null> => {
-    const session = await WorkoutSession.findById(sessionId);
+    const session = await WorkoutSession.findById(sessionId).populate(
+      "exercises.exerciseId",
+      "name category muscleGroup",
+    );
 
     if (!session) {
       throw new ApiError(400, "Session not found");

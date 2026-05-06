@@ -43,10 +43,19 @@ function Verified() {
           }}
         >
           <svg
-            width="18" height="18" viewBox="0 0 24 24" fill="none"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
             style={{ animation: "checkPop 0.35s ease-out 0.4s both" }}
           >
-            <path d="M5 13l4 4L19 7" stroke="#47b8ff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M5 13l4 4L19 7"
+              stroke="#47b8ff"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </div>
 
@@ -64,7 +73,10 @@ function Verified() {
         </div>
 
         {/* Button */}
-        <div className="w-full mt-7" style={{ animation: "fadeUp 0.4s ease-out 0.55s both" }}>
+        <div
+          className="w-full mt-7"
+          style={{ animation: "fadeUp 0.4s ease-out 0.55s both" }}
+        >
           <button
             onClick={() => navigate("/login", { replace: true })}
             className="w-full py-[14px] rounded-[16px] bg-[#3a9fe0] hover:bg-[#4daef0] text-white font-black text-[15px] tracking-[-0.01em] transition-all duration-200 active:scale-[0.98]"
@@ -75,7 +87,10 @@ function Verified() {
         </div>
 
         {/* Progress */}
-        <div className="w-full mt-4" style={{ animation: "fadeUp 0.4s ease-out 0.7s both" }}>
+        <div
+          className="w-full mt-4"
+          style={{ animation: "fadeUp 0.4s ease-out 0.7s both" }}
+        >
           <div className="w-full h-[2px] bg-[#1a1a24] rounded-full overflow-hidden">
             <div
               className="h-full bg-[#47b8ff]/30 rounded-full"
@@ -83,7 +98,10 @@ function Verified() {
             />
           </div>
           <p className="text-[11px] text-[#44445a] mt-2">
-            Redirecting in <span className="text-[#47b8ff]/50 font-bold tabular-nums">{countdown}s</span>
+            Redirecting in{" "}
+            <span className="text-[#47b8ff]/50 font-bold tabular-nums">
+              {countdown}s
+            </span>
           </p>
         </div>
       </div>

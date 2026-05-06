@@ -11,7 +11,11 @@ export const validate =
     }
 
     if (source === "query") {
-      Object.defineProperty(req, "query", { value: result.data, writable: true, configurable: true });
+      Object.defineProperty(req, "query", {
+        value: result.data,
+        writable: true,
+        configurable: true,
+      });
     } else {
       req[source] = result.data;
     }

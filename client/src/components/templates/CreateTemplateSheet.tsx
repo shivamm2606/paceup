@@ -26,7 +26,13 @@ function getExercisesFromTemplate(template: WorkoutTemplate): AddedExercise[] {
     .map((ex) => {
       const populated = ex.exerciseId as PopulatedExercise;
       return {
-        exercise: { _id: populated._id, name: populated.name, muscleGroup: populated.muscleGroup, category: populated.category, isCustom: false },
+        exercise: {
+          _id: populated._id,
+          name: populated.name,
+          muscleGroup: populated.muscleGroup,
+          category: populated.category,
+          isCustom: false,
+        },
         targetSets: ex.targetSets ?? 3,
         notes: ex.notes ?? "",
       };
@@ -58,10 +64,15 @@ export function CreateTemplateSheet({ onClose, editTemplate }: Props) {
   };
 
   const updateExercise = (index: number, patch: Partial<AddedExercise>) =>
-    setExercises(exercises.map((item, i) => (i === index ? { ...item, ...patch } : item)));
+    setExercises(
+      exercises.map((item, i) => (i === index ? { ...item, ...patch } : item)),
+    );
 
   const handleAddExercises = (picked: Exercise[]) =>
-    setExercises([...exercises, ...picked.map((ex) => ({ exercise: ex, targetSets: 3, notes: "" }))]);
+    setExercises([
+      ...exercises,
+      ...picked.map((ex) => ({ exercise: ex, targetSets: 3, notes: "" })),
+    ]);
 
   const handleRemoveExercise = (index: number) => {
     setExercises(exercises.filter((_, i) => i !== index));
@@ -69,7 +80,11 @@ export function CreateTemplateSheet({ onClose, editTemplate }: Props) {
   };
 
   const handleDragReorder = () => {
-    if (dragIndex != null && dragOverIndex != null && dragIndex !== dragOverIndex) {
+    if (
+      dragIndex != null &&
+      dragOverIndex != null &&
+      dragIndex !== dragOverIndex
+    ) {
       const reordered = [...exercises];
       const [moved] = reordered.splice(dragIndex, 1);
       reordered.splice(dragOverIndex, 0, moved);
@@ -123,7 +138,10 @@ export function CreateTemplateSheet({ onClose, editTemplate }: Props) {
         {showPicker ? (
           <ExercisePicker
             alreadyAddedIds={exercises.map((e) => e.exercise._id)}
-            onAdd={(picked) => { handleAddExercises(picked); setShowPicker(false); }}
+            onAdd={(picked) => {
+              handleAddExercises(picked);
+              setShowPicker(false);
+            }}
             onBack={() => setShowPicker(false)}
           />
         ) : (
@@ -268,7 +286,11 @@ export function CreateTemplateSheet({ onClose, editTemplate }: Props) {
                         {/* Sets stepper */}
                         <div className="flex items-center gap-1 shrink-0">
                           <button
-                            onClick={() => updateExercise(i, { targetSets: Math.max(1, item.targetSets - 1) })}
+                            onClick={() =>
+                              updateExercise(i, {
+                                targetSets: Math.max(1, item.targetSets - 1),
+                              })
+                            }
                             className="w-7 h-7 rounded-[8px] bg-[#1a1a24] border border-[#24242e] flex items-center justify-center text-[#6b6b80] hover:text-[#f0f0f5] transition-colors"
                           >
                             <svg
@@ -289,7 +311,11 @@ export function CreateTemplateSheet({ onClose, editTemplate }: Props) {
                             {item.targetSets}
                           </span>
                           <button
-                            onClick={() => updateExercise(i, { targetSets: Math.min(10, item.targetSets + 1) })}
+                            onClick={() =>
+                              updateExercise(i, {
+                                targetSets: Math.min(10, item.targetSets + 1),
+                              })
+                            }
                             className="w-7 h-7 rounded-[8px] bg-[#1a1a24] border border-[#24242e] flex items-center justify-center text-[#6b6b80] hover:text-[#f0f0f5] transition-colors"
                           >
                             <svg
@@ -339,7 +365,9 @@ export function CreateTemplateSheet({ onClose, editTemplate }: Props) {
                           <input
                             type="text"
                             value={item.notes}
-                            onChange={(e) => updateExercise(i, { notes: e.target.value })}
+                            onChange={(e) =>
+                              updateExercise(i, { notes: e.target.value })
+                            }
                             placeholder="e.g. Slow eccentric, pause at bottom…"
                             maxLength={500}
                             className="w-full bg-[#13131a] border border-[#1e1e28] rounded-[10px] px-3 py-[8px] text-[12px] text-[#f0f0f5] placeholder-[#33334a] outline-none focus:border-[#2a2a38] transition-colors"

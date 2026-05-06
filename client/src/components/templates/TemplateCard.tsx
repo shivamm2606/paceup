@@ -1,4 +1,7 @@
-import type { WorkoutTemplate, PopulatedExercise } from "../../types/workoutTemplate.types";
+import type {
+  WorkoutTemplate,
+  PopulatedExercise,
+} from "../../types/workoutTemplate.types";
 import { getMuscleColor, formatMuscle } from "./templateUtils";
 
 interface TemplateCardProps {
@@ -11,7 +14,8 @@ export function TemplateCard({ template, onClick }: TemplateCardProps) {
   for (const ex of template.exercises) {
     if (typeof ex.exerciseId === "object" && ex.exerciseId !== null) {
       const group = (ex.exerciseId as PopulatedExercise).muscleGroup;
-      if (group && !uniqueMuscleGroups.includes(group)) uniqueMuscleGroups.push(group);
+      if (group && !uniqueMuscleGroups.includes(group))
+        uniqueMuscleGroups.push(group);
     }
     if (uniqueMuscleGroups.length >= 4) break;
   }
@@ -27,7 +31,8 @@ export function TemplateCard({ template, onClick }: TemplateCardProps) {
             {template.name}
           </p>
           <p className="text-[12px] text-[#6b6b80] mt-1">
-            {template.exercises.length} exercise{template.exercises.length !== 1 ? "s" : ""}
+            {template.exercises.length} exercise
+            {template.exercises.length !== 1 ? "s" : ""}
           </p>
 
           {uniqueMuscleGroups.length > 0 && (
@@ -38,7 +43,11 @@ export function TemplateCard({ template, onClick }: TemplateCardProps) {
                   <span
                     key={group}
                     className="text-[9px] font-bold tracking-[0.04em] uppercase px-[7px] py-[2.5px] rounded-md border"
-                    style={{ background: muscleColor.bg, color: muscleColor.text, borderColor: muscleColor.border }}
+                    style={{
+                      background: muscleColor.bg,
+                      color: muscleColor.text,
+                      borderColor: muscleColor.border,
+                    }}
                   >
                     {formatMuscle(group)}
                   </span>

@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { useGetExercises } from "../../hooks/exercises/useGetExercises";
-import { getMuscleColor, formatMuscle, MUSCLE_GROUPS, CATEGORIES } from "./templateUtils";
+import {
+  getMuscleColor,
+  formatMuscle,
+  MUSCLE_GROUPS,
+  CATEGORIES,
+} from "./templateUtils";
 import type { Exercise } from "../../hooks/exercises/useGetExercises";
 
 interface Props {
@@ -14,9 +19,15 @@ export function ExercisePicker({ alreadyAddedIds, onAdd, onBack }: Props) {
   const [selectedMuscle, setSelectedMuscle] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selected, setSelected] = useState<Exercise[]>([]);
-  const [openFilter, setOpenFilter] = useState<"muscle" | "category" | null>(null);
+  const [openFilter, setOpenFilter] = useState<"muscle" | "category" | null>(
+    null,
+  );
 
-  const { data: exercises = [], isLoading, isError } = useGetExercises({
+  const {
+    data: exercises = [],
+    isLoading,
+    isError,
+  } = useGetExercises({
     search: search || undefined,
     muscleGroup: selectedMuscle || undefined,
     category: selectedCategory || undefined,
@@ -45,8 +56,10 @@ export function ExercisePicker({ alreadyAddedIds, onAdd, onBack }: Props) {
     setOpenFilter(null);
   };
 
-  const filterItems = openFilter === "muscle" ? [...MUSCLE_GROUPS] : [...CATEGORIES];
-  const activeFilter = openFilter === "muscle" ? selectedMuscle : selectedCategory;
+  const filterItems =
+    openFilter === "muscle" ? [...MUSCLE_GROUPS] : [...CATEGORIES];
+  const activeFilter =
+    openFilter === "muscle" ? selectedMuscle : selectedCategory;
 
   return (
     <div className="flex flex-col h-full">
@@ -65,7 +78,13 @@ export function ExercisePicker({ alreadyAddedIds, onAdd, onBack }: Props) {
           className="w-9 h-9 rounded-[12px] bg-[#13131a] border border-[#1e1e28] flex items-center justify-center text-[#8b8b9a] hover:text-[#f0f0f5] transition-colors"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M19 12H5M11 6l-6 6 6 6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
       </div>
@@ -73,9 +92,20 @@ export function ExercisePicker({ alreadyAddedIds, onAdd, onBack }: Props) {
       {/* Search */}
       <div className="shrink-0 mb-3">
         <div className="relative">
-          <svg className="absolute left-3.5 top-1/2 -translate-y-1/2" width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <svg
+            className="absolute left-3.5 top-1/2 -translate-y-1/2"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
             <circle cx="11" cy="11" r="7" stroke="#44445a" strokeWidth="2" />
-            <path d="M20 20l-4-4" stroke="#44445a" strokeWidth="2" strokeLinecap="round" />
+            <path
+              d="M20 20l-4-4"
+              stroke="#44445a"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
           </svg>
           <input
             type="text"
@@ -90,7 +120,9 @@ export function ExercisePicker({ alreadyAddedIds, onAdd, onBack }: Props) {
       {/* Filter Buttons */}
       <div className="shrink-0 mb-3 flex gap-[8px] relative">
         <button
-          onClick={() => setOpenFilter(openFilter === "muscle" ? null : "muscle")}
+          onClick={() =>
+            setOpenFilter(openFilter === "muscle" ? null : "muscle")
+          }
           className={`flex items-center gap-1.5 text-[11px] font-bold tracking-tight px-3 py-[7px] rounded-[10px] border transition-all duration-150 ${
             selectedMuscle
               ? "bg-[rgba(123,157,255,0.12)] text-[#7b9dff] border-[rgba(123,157,255,0.25)]"
@@ -99,12 +131,20 @@ export function ExercisePicker({ alreadyAddedIds, onAdd, onBack }: Props) {
         >
           {selectedMuscle ? formatMuscle(selectedMuscle) : "Body Part"}
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
-            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M6 9l6 6 6-6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
 
         <button
-          onClick={() => setOpenFilter(openFilter === "category" ? null : "category")}
+          onClick={() =>
+            setOpenFilter(openFilter === "category" ? null : "category")
+          }
           className={`flex items-center gap-1.5 text-[11px] font-bold tracking-tight px-3 py-[7px] rounded-[10px] border transition-all duration-150 ${
             selectedCategory
               ? "bg-[rgba(123,157,255,0.12)] text-[#7b9dff] border-[rgba(123,157,255,0.25)]"
@@ -113,19 +153,30 @@ export function ExercisePicker({ alreadyAddedIds, onAdd, onBack }: Props) {
         >
           {selectedCategory ? formatMuscle(selectedCategory) : "Category"}
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
-            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M6 9l6 6 6-6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
 
         {/* Dropdown */}
         {openFilter && (
           <>
-            <div className="fixed inset-0 z-[70]" onClick={() => setOpenFilter(null)} />
+            <div
+              className="fixed inset-0 z-[70]"
+              onClick={() => setOpenFilter(null)}
+            />
             <div className="absolute top-[42px] left-0 z-[71] bg-[#16161e] border border-[#24242e] rounded-[12px] p-1.5 w-[140px] shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
               <button
                 onClick={handleClearFilter}
                 className={`w-full text-left px-3 py-[7px] rounded-[8px] text-[12px] font-bold transition-colors ${
-                  !activeFilter ? "text-[#7b9dff] bg-[rgba(123,157,255,0.08)]" : "text-[#8b8b9a] hover:bg-[#1a1a24]"
+                  !activeFilter
+                    ? "text-[#7b9dff] bg-[rgba(123,157,255,0.08)]"
+                    : "text-[#8b8b9a] hover:bg-[#1a1a24]"
                 }`}
               >
                 All
@@ -135,7 +186,9 @@ export function ExercisePicker({ alreadyAddedIds, onAdd, onBack }: Props) {
                   key={item}
                   onClick={() => handleSelectFilter(item)}
                   className={`w-full text-left px-3 py-[7px] rounded-[8px] text-[12px] font-bold transition-colors ${
-                    activeFilter === item ? "text-[#7b9dff] bg-[rgba(123,157,255,0.08)]" : "text-[#8b8b9a] hover:bg-[#1a1a24]"
+                    activeFilter === item
+                      ? "text-[#7b9dff] bg-[rgba(123,157,255,0.08)]"
+                      : "text-[#8b8b9a] hover:bg-[#1a1a24]"
                   }`}
                 >
                   {formatMuscle(item)}
@@ -156,7 +209,9 @@ export function ExercisePicker({ alreadyAddedIds, onAdd, onBack }: Props) {
 
         {!isLoading && isError && (
           <div className="flex flex-col items-center justify-center py-12 gap-2">
-            <p className="text-[13px] text-[#ef4444]">Failed to load exercises</p>
+            <p className="text-[13px] text-[#ef4444]">
+              Failed to load exercises
+            </p>
             <p className="text-[11px] text-[#6b6b80]">Check your connection</p>
           </div>
         )}
@@ -198,8 +253,19 @@ export function ExercisePicker({ alreadyAddedIds, onAdd, onBack }: Props) {
                     }`}
                   >
                     {(checked || alreadyAdded) && (
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                        <path d="M5 13l4 4L19 7" stroke={alreadyAdded ? "#44445a" : "#0b0b10"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M5 13l4 4L19 7"
+                          stroke={alreadyAdded ? "#44445a" : "#0b0b10"}
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                     )}
                   </div>
@@ -211,7 +277,11 @@ export function ExercisePicker({ alreadyAddedIds, onAdd, onBack }: Props) {
                     </p>
                     <span
                       className="inline-block mt-1 text-[8.5px] font-bold tracking-[0.04em] uppercase px-[6px] py-[1.5px] rounded-[5px] border"
-                      style={{ background: muscleColor.bg, color: muscleColor.text, borderColor: muscleColor.border }}
+                      style={{
+                        background: muscleColor.bg,
+                        color: muscleColor.text,
+                        borderColor: muscleColor.border,
+                      }}
                     >
                       {formatMuscle(ex.muscleGroup)}
                     </span>
@@ -231,9 +301,10 @@ export function ExercisePicker({ alreadyAddedIds, onAdd, onBack }: Props) {
           className={`
             w-full py-[14px] rounded-[14px] text-[14px] font-extrabold tracking-tight
             transition-all duration-150
-            ${selected.length > 0
-              ? "bg-[#7b9dff] text-[#0b0b10] hover:bg-[#8daeff] active:scale-[0.98]"
-              : "bg-[#1a1a24] text-[#44445a] cursor-not-allowed"
+            ${
+              selected.length > 0
+                ? "bg-[#7b9dff] text-[#0b0b10] hover:bg-[#8daeff] active:scale-[0.98]"
+                : "bg-[#1a1a24] text-[#44445a] cursor-not-allowed"
             }
           `}
         >

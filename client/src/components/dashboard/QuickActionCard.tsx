@@ -4,7 +4,11 @@ interface QuickActionCardProps {
   onClick: () => void;
 }
 
-export function QuickActionCard({ icon, label, onClick }: QuickActionCardProps) {
+export function QuickActionCard({
+  icon,
+  label,
+  onClick,
+}: QuickActionCardProps) {
   return (
     <button
       onClick={onClick}

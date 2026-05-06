@@ -5,7 +5,12 @@ interface AuthHeaderProps {
   description?: React.ReactNode;
 }
 
-export function AuthHeader({ icon, subtitle, title, description }: AuthHeaderProps) {
+export function AuthHeader({
+  icon,
+  subtitle,
+  title,
+  description,
+}: AuthHeaderProps) {
   return (
     <div className="mb-8">
       <div className="w-[56px] h-[56px] rounded-[18px] bg-[rgba(71,184,255,0.08)] border border-[rgba(71,184,255,0.18)] flex items-center justify-center mb-6">
