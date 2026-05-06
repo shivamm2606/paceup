@@ -1,4 +1,5 @@
 export interface IBodyweightLog {
+  _id: string;
   userId: string;
   weight: number;
   unit: "kg" | "lbs";
@@ -7,7 +8,7 @@ export interface IBodyweightLog {
 }
 
 export interface PaginatedBodyweights {
-  logs: IBodyweightLog[];
+  entries: IBodyweightLog[];
   total: number;
   page: number;
   totalPages: number;
