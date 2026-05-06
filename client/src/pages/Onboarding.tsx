@@ -7,7 +7,11 @@ import { AuthAlert } from "../components/auth/AuthAlert";
 import useAuthStore from "../store/authStore";
 
 type Gender = "male" | "female" | "other";
-type ActivityLevel = "sedentary" | "lightly_active" | "moderately_active" | "very_active";
+type ActivityLevel =
+  | "sedentary"
+  | "lightly_active"
+  | "moderately_active"
+  | "very_active";
 type Goal = "lose_weight" | "maintain" | "lean_bulk" | "bulk";
 
 const TOTAL_STEPS = 3;
@@ -70,7 +74,9 @@ function NumberInput({
 }) {
   return (
     <div>
-      <label className="text-[12px] font-semibold text-[#8b8b9a] mb-2 block">{label}</label>
+      <label className="text-[12px] font-semibold text-[#8b8b9a] mb-2 block">
+        {label}
+      </label>
       <div className="relative">
         <input
           type="number"
@@ -114,13 +120,15 @@ function StepAbout({
       </div>
 
       <div className="mb-6">
-        <label className="text-[12px] font-semibold text-[#8b8b9a] mb-3 block">Gender</label>
+        <label className="text-[12px] font-semibold text-[#8b8b9a] mb-3 block">
+          Gender
+        </label>
         <div className="space-y-2">
-          {([
+          {[
             { value: "male" as Gender, label: "♂ Male" },
             { value: "female" as Gender, label: "♀ Female" },
             { value: "other" as Gender, label: "⚧ Other" },
-          ]).map((opt) => (
+          ].map((opt) => (
             <OptionButton
               key={opt.value}
               selected={gender === opt.value}
@@ -133,7 +141,9 @@ function StepAbout({
       </div>
 
       <div>
-        <label className="text-[12px] font-semibold text-[#8b8b9a] mb-2 block">Date of Birth</label>
+        <label className="text-[12px] font-semibold text-[#8b8b9a] mb-2 block">
+          Date of Birth
+        </label>
         <input
           type="date"
           value={dob}
@@ -176,9 +186,27 @@ function StepBodyStats({
       </div>
 
       <div className="space-y-4">
-        <NumberInput label="Height" value={height} onChange={setHeight} unit="cm" placeholder="175" />
-        <NumberInput label="Current Weight" value={currentWeight} onChange={setCurrentWeight} unit="kg" placeholder="75" />
-        <NumberInput label="Target Weight" value={targetWeight} onChange={setTargetWeight} unit="kg" placeholder="70" />
+        <NumberInput
+          label="Height"
+          value={height}
+          onChange={setHeight}
+          unit="cm"
+          placeholder="175"
+        />
+        <NumberInput
+          label="Current Weight"
+          value={currentWeight}
+          onChange={setCurrentWeight}
+          unit="kg"
+          placeholder="75"
+        />
+        <NumberInput
+          label="Target Weight"
+          value={targetWeight}
+          onChange={setTargetWeight}
+          unit="kg"
+          placeholder="70"
+        />
       </div>
     </div>
   );
@@ -210,35 +238,57 @@ function StepGoal({
       </div>
 
       <div className="mb-6">
-        <label className="text-[12px] font-semibold text-[#8b8b9a] mb-3 block">Activity Level</label>
+        <label className="text-[12px] font-semibold text-[#8b8b9a] mb-3 block">
+          Activity Level
+        </label>
         <div className="space-y-2">
-          {([
-            { value: "sedentary" as ActivityLevel, label: "🪑 Sedentary", desc: "Little or no exercise" },
-            { value: "lightly_active" as ActivityLevel, label: "🚶 Lightly Active", desc: "1–3 days/week" },
-            { value: "moderately_active" as ActivityLevel, label: "🏃 Moderately Active", desc: "3–5 days/week" },
-            { value: "very_active" as ActivityLevel, label: "🔥 Very Active", desc: "6–7 days/week" },
-          ]).map((opt) => (
+          {[
+            {
+              value: "sedentary" as ActivityLevel,
+              label: "🪑 Sedentary",
+              desc: "Little or no exercise",
+            },
+            {
+              value: "lightly_active" as ActivityLevel,
+              label: "🚶 Lightly Active",
+              desc: "1–3 days/week",
+            },
+            {
+              value: "moderately_active" as ActivityLevel,
+              label: "🏃 Moderately Active",
+              desc: "3–5 days/week",
+            },
+            {
+              value: "very_active" as ActivityLevel,
+              label: "🔥 Very Active",
+              desc: "6–7 days/week",
+            },
+          ].map((opt) => (
             <OptionButton
               key={opt.value}
               selected={activityLevel === opt.value}
               onClick={() => setActivityLevel(opt.value)}
             >
               <span>{opt.label}</span>
-              <span className="block text-[11px] text-[#6b6b80] font-normal mt-0.5">{opt.desc}</span>
+              <span className="block text-[11px] text-[#6b6b80] font-normal mt-0.5">
+                {opt.desc}
+              </span>
             </OptionButton>
           ))}
         </div>
       </div>
 
       <div>
-        <label className="text-[12px] font-semibold text-[#8b8b9a] mb-3 block">Fitness Goal</label>
+        <label className="text-[12px] font-semibold text-[#8b8b9a] mb-3 block">
+          Fitness Goal
+        </label>
         <div className="space-y-2">
-          {([
+          {[
             { value: "lose_weight" as Goal, label: "⬇️ Lose Weight" },
             { value: "maintain" as Goal, label: "⚖️ Maintain" },
             { value: "lean_bulk" as Goal, label: "💪 Lean Bulk" },
             { value: "bulk" as Goal, label: "⬆️ Bulk" },
-          ]).map((opt) => (
+          ].map((opt) => (
             <OptionButton
               key={opt.value}
               selected={goal === opt.value}
@@ -265,7 +315,9 @@ function Onboarding() {
   const [height, setHeight] = useState("");
   const [currentWeight, setCurrentWeight] = useState("");
   const [targetWeight, setTargetWeight] = useState("");
-  const [activityLevel, setActivityLevel] = useState<ActivityLevel | null>(null);
+  const [activityLevel, setActivityLevel] = useState<ActivityLevel | null>(
+    null,
+  );
   const [goal, setGoal] = useState<Goal | null>(null);
 
   const canProceedStep0 = !!gender && !!dob;
@@ -306,25 +358,38 @@ function Onboarding() {
   };
 
   return (
-    <AuthLayout onBack={step > 0 ? handleBack : undefined} hideBack={step === 0}>
+    <AuthLayout
+      onBack={step > 0 ? handleBack : undefined}
+      hideBack={step === 0}
+    >
       <StepDots current={step} total={TOTAL_STEPS} />
 
       {error && <AuthAlert variant="error" message={getErrorMessage(error)} />}
 
       {step === 0 && (
-        <StepAbout gender={gender} setGender={setGender} dob={dob} setDob={setDob} />
+        <StepAbout
+          gender={gender}
+          setGender={setGender}
+          dob={dob}
+          setDob={setDob}
+        />
       )}
       {step === 1 && (
         <StepBodyStats
-          height={height} setHeight={setHeight}
-          currentWeight={currentWeight} setCurrentWeight={setCurrentWeight}
-          targetWeight={targetWeight} setTargetWeight={setTargetWeight}
+          height={height}
+          setHeight={setHeight}
+          currentWeight={currentWeight}
+          setCurrentWeight={setCurrentWeight}
+          targetWeight={targetWeight}
+          setTargetWeight={setTargetWeight}
         />
       )}
       {step === 2 && (
         <StepGoal
-          activityLevel={activityLevel} setActivityLevel={setActivityLevel}
-          goal={goal} setGoal={setGoal}
+          activityLevel={activityLevel}
+          setActivityLevel={setActivityLevel}
+          goal={goal}
+          setGoal={setGoal}
         />
       )}
 
@@ -334,14 +399,35 @@ function Onboarding() {
         disabled={!canProceed || isPending}
         className="w-full mt-8 relative overflow-hidden bg-[#3a9fe0] hover:bg-[#4daef0] disabled:bg-[#0f1e2e] disabled:text-[#2a4a6a] text-white font-black text-[15px] tracking-[-0.01em] py-[14px] rounded-[16px] transition-all duration-200 disabled:cursor-not-allowed"
         style={{
-          boxShadow: !canProceed || isPending ? "none" : "0 0 24px rgba(71,184,255,0.15)",
+          boxShadow:
+            !canProceed || isPending
+              ? "none"
+              : "0 0 24px rgba(71,184,255,0.15)",
         }}
       >
         {isPending ? (
           <span className="flex items-center justify-center gap-2">
-            <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.5" opacity="0.3" />
-              <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+            <svg
+              className="animate-spin"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                opacity="0.3"
+              />
+              <path
+                d="M12 2a10 10 0 0 1 10 10"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
             </svg>
             Saving...
           </span>
