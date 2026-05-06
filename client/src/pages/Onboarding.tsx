@@ -306,7 +306,7 @@ function Onboarding() {
   };
 
   return (
-    <AuthLayout onBack={step > 0 ? handleBack : undefined}>
+    <AuthLayout onBack={step > 0 ? handleBack : undefined} hideBack={step === 0}>
       <StepDots current={step} total={TOTAL_STEPS} />
 
       {error && <AuthAlert variant="error" message={getErrorMessage(error)} />}
@@ -332,9 +332,9 @@ function Onboarding() {
         type="button"
         onClick={handleNext}
         disabled={!canProceed || isPending}
-        className="w-full mt-8 relative overflow-hidden bg-[#47b8ff] hover:bg-[#6fc8ff] disabled:bg-[#0f1e2e] disabled:text-[#2a4a6a] text-white font-black text-[15px] tracking-[-0.01em] py-[14px] rounded-[16px] transition-all duration-200 disabled:cursor-not-allowed"
+        className="w-full mt-8 relative overflow-hidden bg-[#3a9fe0] hover:bg-[#4daef0] disabled:bg-[#0f1e2e] disabled:text-[#2a4a6a] text-white font-black text-[15px] tracking-[-0.01em] py-[14px] rounded-[16px] transition-all duration-200 disabled:cursor-not-allowed"
         style={{
-          boxShadow: !canProceed || isPending ? "none" : "0 0 28px rgba(71,184,255,0.25)",
+          boxShadow: !canProceed || isPending ? "none" : "0 0 24px rgba(71,184,255,0.15)",
         }}
       >
         {isPending ? (
@@ -351,16 +351,6 @@ function Onboarding() {
           "Finish Setup"
         )}
       </button>
-
-      {step === 0 && (
-        <button
-          type="button"
-          onClick={() => navigate("/dashboard", { replace: true })}
-          className="w-full mt-3 text-[13px] font-semibold text-[#44445a] hover:text-[#8b8b9a] transition-colors py-2"
-        >
-          Skip for now
-        </button>
-      )}
     </AuthLayout>
   );
 }
