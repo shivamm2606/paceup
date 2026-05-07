@@ -55,9 +55,12 @@ function Profile() {
     confirmLogout ? logout() : setConfirmLogout(true);
 
   return (
-    <div className="bg-[#0b0b10] bg-[radial-gradient(140%_90%_at_50%_0%,_rgba(70,80,120,0.16),_rgba(11,11,16,0)_55%),linear-gradient(180deg,_rgba(12,12,18,1)_0%,_rgba(10,10,16,1)_100%)] text-[#f4f4f6] min-h-screen pb-[82px]">
+    <div
+      className="bg-[#0b0b10] bg-[radial-gradient(140%_90%_at_50%_0%,_rgba(70,80,120,0.16),_rgba(11,11,16,0)_55%),linear-gradient(180deg,_rgba(12,12,18,1)_0%,_rgba(10,10,16,1)_100%)] text-[#f4f4f6] min-h-screen"
+      style={{ paddingBottom: "calc(82px + env(safe-area-inset-bottom))" }}
+    >
       {/* Header */}
-      <div className="px-5 pt-[56px] pb-2">
+      <div className="px-5 pb-2" style={{ paddingTop: "calc(24px + env(safe-area-inset-top))" }}>
         <p className="text-[11px] font-bold text-[#44445a] tracking-[0.1em] uppercase mb-1.5">
           Account
         </p>
