@@ -19,6 +19,8 @@ const strengthSetSchema = z.object({
   weight: z.number().min(0),
   unit: z.enum(["kg", "lbs"]),
   isWarmup: z.boolean(),
+  isDropSet: z.boolean().optional(),
+  isFailure: z.boolean().optional(),
   notes: z.string().max(500).optional(),
 });
 

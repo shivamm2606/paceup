@@ -95,6 +95,7 @@ export const completeSession = asyncHandler(async (req, res) => {
   const session = await MongoWorkoutSessionService.completeSession(
     sessionId,
     userId,
+    req.body?.exercises,
   );
 
   res

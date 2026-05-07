@@ -117,6 +117,7 @@ class MongoWorkoutSessionService implements IWorkoutSessionService {
   completeSession = async (
     sessionId: string,
     userId: string,
+    exerciseSets?: { exerciseId: string; sets: Omit<LogSetDto, 'exerciseId'>[]; notes?: string }[],
   ): Promise<IWorkoutSession> => {
     const session = await WorkoutSession.findById(sessionId);
 
@@ -130,6 +131,20 @@ class MongoWorkoutSessionService implements IWorkoutSessionService {
 
     if (session.status === "completed") {
       throw new ApiError(400, "Session is already completed");
+    }
+
+    // Bulk-save sets if provided
+    if (exerciseSets && exerciseSets.length > 0) {
+      for (const entry of exerciseSets) {
+        const exercise = session.exercises.find((e) =>
+          e.exerciseId.equals(entry.exerciseId),
+        );
+        if (exercise) {
+          exercise.sets = entry.sets as any;
+          if (entry.notes) exercise.notes = entry.notes;
+        }
+      }
+      session.markModified("exercises");
     }
 
     const duration = Math.round(
