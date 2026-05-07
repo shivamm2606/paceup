@@ -20,7 +20,7 @@ const LABELS: Record<string, string> = {
 };
 
 function formatLabel(key?: string) {
-  return key ? (LABELS[key] ?? key) : "—";
+  return key ? (LABELS[key] ?? key) : "-";
 }
 
 function getInitials(name: string) {
@@ -96,10 +96,10 @@ function Profile() {
 
             {/* Name & Email */}
             <p className="text-[18px] font-extrabold text-[#f0f0f5] tracking-tight text-center leading-tight">
-              {user?.name ?? "—"}
+              {user?.name ?? "-"}
             </p>
             <p className="text-[12px] text-[#6b6b80] mt-1 text-center">
-              {user?.email ?? "—"}
+              {user?.email ?? "-"}
             </p>
             {user?.username && (
               <p className="text-[11px] text-[#44445a] mt-0.5 text-center">
@@ -238,7 +238,7 @@ function StatTile({
   value?: number;
   unit: string;
 }) {
-  const display = value != null ? `${value}` : "—";
+  const display = value != null ? `${value}` : "-";
   return (
     <div className="bg-[#121216] border border-[#1a1a20] rounded-[14px] p-[14px]">
       <p className="text-[10px] font-bold text-[#44445a] tracking-[0.06em] uppercase mb-1.5">
@@ -248,7 +248,7 @@ function StatTile({
         <p className="text-[20px] font-black text-[#f0f0f5] tabular-nums leading-none">
           {display}
         </p>
-        {display !== "—" && (
+        {display !== "-" && (
           <span className="text-[10px] font-semibold text-[#55556a]">
             {unit}
           </span>

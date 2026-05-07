@@ -158,7 +158,7 @@ export function LogBodyweightSheet({ onClose }: Props) {
                 />
               </svg>
               <p className="text-[13px] text-[#44445a]">
-                No entries yet — log your first weigh-in above
+                No entries yet - log your first weigh-in above
               </p>
             </div>
           ) : (

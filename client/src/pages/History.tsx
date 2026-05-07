@@ -20,7 +20,7 @@ function useHistory(page: number) {
 }
 
 function fmtDuration(mins?: number) {
-  if (!mins) return "—";
+  if (!mins) return "-";
   if (mins < 60) return `${mins}m`;
   return `${Math.floor(mins / 60)}h ${mins % 60}m`;
 }

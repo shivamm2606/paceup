@@ -493,7 +493,7 @@ function ActiveWorkout() {
                 className={`text-[13px] font-bold ${restOver ? "text-[#4ade80]" : "text-[#7b9dff]"}`}
               >
                 {restOver
-                  ? "Rest Over — Start Next Set!"
+                  ? "Rest Over - Start Next Set!"
                   : `Rest: ${formatTimer(restTimer)}`}
               </span>
             </div>
@@ -572,7 +572,7 @@ function ActiveWorkout() {
                 if (last.type === "strength")
                   return `${last.weight} × ${last.reps}`;
               }
-              return "—";
+              return "-";
             };
 
             return (

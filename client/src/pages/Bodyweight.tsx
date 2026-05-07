@@ -309,7 +309,7 @@ function HeroCard({
           </p>
           <div className="flex items-baseline gap-1.5">
             <p className="text-[36px] font-black text-[#f0f0f5] tabular-nums leading-none">
-              {latestWeight ?? "—"}
+              {latestWeight ?? "-"}
             </p>
             {latestWeight && (
               <span className="text-[14px] font-semibold text-[#55556a]">
@@ -475,7 +475,7 @@ function HistoryList({
           />
         </svg>
         <p className="text-[13px] text-[#44445a]">
-          No entries yet — log your first weigh-in above
+          No entries yet - log your first weigh-in above
         </p>
       </div>
     );
