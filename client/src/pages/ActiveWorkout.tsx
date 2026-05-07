@@ -288,8 +288,11 @@ function ActiveWorkout() {
 
   const handleDiscard = () => {
     setIsDiscarding(true);
-    navigate("/dashboard", { replace: true });
-    deleteSession();
+    deleteSession(undefined, {
+      onSettled: () => {
+        navigate("/dashboard", { replace: true });
+      },
+    });
   };
 
   // loading
