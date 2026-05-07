@@ -63,7 +63,10 @@ function Templates() {
       style={{ paddingBottom: "calc(82px + env(safe-area-inset-bottom))" }}
     >
       {/* Header */}
-      <div className="px-5 pb-2" style={{ paddingTop: "calc(24px + env(safe-area-inset-top))" }}>
+      <div
+        className="px-5 pb-2"
+        style={{ paddingTop: "calc(24px + env(safe-area-inset-top))" }}
+      >
         <p className="text-[11px] font-bold text-[#44445a] tracking-[0.1em] uppercase mb-1.5">
           Library
         </p>

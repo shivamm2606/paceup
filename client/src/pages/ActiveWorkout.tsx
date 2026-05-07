@@ -339,7 +339,13 @@ function ActiveWorkout() {
   if (showPicker) {
     return (
       <div className="fixed inset-0 z-[60] bg-[#0b0b10]">
-        <div className="h-full max-w-[520px] mx-auto px-5" style={{ paddingTop: "calc(16px + env(safe-area-inset-top))", paddingBottom: "calc(24px + env(safe-area-inset-bottom))" }}>
+        <div
+          className="h-full max-w-[520px] mx-auto px-5"
+          style={{
+            paddingTop: "calc(16px + env(safe-area-inset-top))",
+            paddingBottom: "calc(24px + env(safe-area-inset-bottom))",
+          }}
+        >
           <ExercisePicker
             alreadyAddedIds={addedIds}
             onAdd={handleAddExercises}
@@ -365,7 +371,10 @@ function ActiveWorkout() {
     <div className="min-h-screen bg-[#0b0b10] text-[#f0f0f5]">
       {/* header */}
       <div className="sticky top-0 z-30 bg-[#0b0b10]/95 backdrop-blur-md border-b border-[#1a1a22]">
-        <div className="max-w-[520px] mx-auto px-4 pb-3 flex items-center justify-between" style={{ paddingTop: "calc(12px + env(safe-area-inset-top))" }}>
+        <div
+          className="max-w-[520px] mx-auto px-4 pb-3 flex items-center justify-between"
+          style={{ paddingTop: "calc(12px + env(safe-area-inset-top))" }}
+        >
           <div className="flex items-center gap-3">
             <button
               onClick={() => setConfirmDiscard(true)}
@@ -520,7 +529,10 @@ function ActiveWorkout() {
       )}
 
       {/* exercises */}
-      <div className="max-w-[520px] mx-auto px-4 pt-3" style={{ paddingBottom: "calc(140px + env(safe-area-inset-bottom))" }}>
+      <div
+        className="max-w-[520px] mx-auto px-4 pt-3"
+        style={{ paddingBottom: "calc(140px + env(safe-area-inset-bottom))" }}
+      >
         {session.exercises.length === 0 && (
           <div className="flex flex-col items-center py-16 gap-3">
             <div className="w-14 h-14 rounded-2xl bg-[#13131a] border border-[#1e1e28] flex items-center justify-center">

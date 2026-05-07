@@ -137,7 +137,10 @@ function Bodyweight() {
       style={{ paddingBottom: "calc(82px + env(safe-area-inset-bottom))" }}
     >
       {/* Header */}
-      <div className="px-5 pb-2" style={{ paddingTop: "calc(24px + env(safe-area-inset-top))" }}>
+      <div
+        className="px-5 pb-2"
+        style={{ paddingTop: "calc(24px + env(safe-area-inset-top))" }}
+      >
         <div className="flex items-center gap-3 mb-1.5">
           <button
             onClick={() => navigate(-1)}
