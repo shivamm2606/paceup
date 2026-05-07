@@ -106,3 +106,18 @@ h6 {
   background: #2a2a36;
   border-radius: 4px;
 }
+
+/* Prevent iOS auto-zoom on input focus (triggers when font-size < 16px) */
+@media screen and (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Disable double-tap and pinch zoom for PWA native feel */
+html {
+  touch-action: manipulation;
+}
+
