@@ -10,8 +10,20 @@ export const useDeleteSession = (sessionId: string) => {
       api.delete(`/workout-session/${sessionId}`).then((r) => r.data),
 
     onMutate: async () => {
-      // Cancel any in-flight refetches so they don't overwrite our removal
       await queryClient.cancelQueries({ queryKey: ["session", sessionId] });
+      await queryClient.cancelQueries({ queryKey: ["AllWorkoutSessions"] });
+
+      // immediate delete
+      queryClient.setQueriesData<{ sessions: { _id: string }[] }>(
+        { queryKey: ["AllWorkoutSessions"] },
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            sessions: old.sessions.filter((s) => s._id !== sessionId),
+          };
+        },
+      );
     },
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: ["session", sessionId] });
@@ -19,6 +31,8 @@ export const useDeleteSession = (sessionId: string) => {
       toast.success("Workout discarded");
     },
     onError: () => {
+      // Refetch to restore the cache if delete failed
+      queryClient.invalidateQueries({ queryKey: ["AllWorkoutSessions"] });
       toast.error("Failed to discard workout");
     },
   });
