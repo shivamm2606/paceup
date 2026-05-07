@@ -13,25 +13,28 @@ export const useDeleteSession = (sessionId: string) => {
       await queryClient.cancelQueries({ queryKey: ["session", sessionId] });
       await queryClient.cancelQueries({ queryKey: ["AllWorkoutSessions"] });
 
-      // immediate delete
-      queryClient.setQueriesData<{ sessions: { _id: string }[] }>(
+      // Immediately remove this session from every matching cache entry
+      queryClient.setQueriesData(
         { queryKey: ["AllWorkoutSessions"] },
-        (old) => {
-          if (!old) return old;
+        (old: unknown) => {
+          if (!old || typeof old !== "object") return old;
+          const data = old as { sessions?: { _id: string }[] };
+          if (!data.sessions) return old;
           return {
-            ...old,
-            sessions: old.sessions.filter((s) => s._id !== sessionId),
+            ...data,
+            sessions: data.sessions.filter((s) => s._id !== sessionId),
           };
         },
       );
+
+      // Also remove the individual session query
+      queryClient.removeQueries({ queryKey: ["session", sessionId] });
     },
     onSuccess: () => {
-      queryClient.removeQueries({ queryKey: ["session", sessionId] });
       queryClient.invalidateQueries({ queryKey: ["AllWorkoutSessions"] });
       toast.success("Workout discarded");
     },
     onError: () => {
-      // Refetch to restore the cache if delete failed
       queryClient.invalidateQueries({ queryKey: ["AllWorkoutSessions"] });
       toast.error("Failed to discard workout");
     },

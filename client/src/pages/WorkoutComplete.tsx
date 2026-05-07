@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "../hooks/sessions/useSession";
 import {
   getMuscleColor,
@@ -24,6 +25,7 @@ function formatDuration(minutes: number): string {
 function WorkoutComplete() {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: session, isLoading } = useSession(sessionId ?? "");
 
   const stats = useMemo(() => {
@@ -222,7 +224,10 @@ function WorkoutComplete() {
 
         {/* Action Button */}
         <button
-          onClick={() => navigate("/dashboard", { replace: true })}
+          onClick={() => {
+            queryClient.invalidateQueries({ queryKey: ["AllWorkoutSessions"] });
+            navigate("/dashboard", { replace: true });
+          }}
           className="w-full py-[14px] rounded-[14px] bg-[#4ade80] text-[#0b0b10] text-[15px] font-extrabold tracking-tight hover:bg-[#5ae88d] active:scale-[0.98] transition-all duration-150 mb-10"
           style={{ animation: "fadeUp 0.5s ease-out 0.75s both" }}
         >
