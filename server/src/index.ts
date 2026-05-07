@@ -7,9 +7,9 @@ const port = process.env.PORT || 8000;
 
 ConnectDB()
   .then(() => {
-    const server = app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
-    });
+    const server = app.listen(Number(port), () =>
+      console.log(`Server running on port ${port}`),
+    );
 
     const shutdown = async () => {
       console.log("\nShutting down...");
