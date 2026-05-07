@@ -2,12 +2,17 @@ import MongoAuthService from "../services/auth.service.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 
-const cookieOptions = {
+const cookieOptions: {
+  httpOnly: boolean;
+  secure: boolean;
+  sameSite: "none" | "lax" | "strict";
+  maxAge: number;
+} = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  sameSite: "lax",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   maxAge: 1000 * 60 * 60 * 24 * 7,
-} as const;
+};
 
 export const registerUser = asyncHandler(async (req, res) => {
   const result = await MongoAuthService.registerUser(req.body);
