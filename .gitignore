@@ -69,4 +69,5 @@ coverage/
 # Tests
 __tests__/
 
+docs/
 seed.ts
