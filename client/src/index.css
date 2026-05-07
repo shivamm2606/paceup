@@ -4,9 +4,18 @@ html {
   height: 100%;
   height: -webkit-fill-available;
   background: #0b0b10;
+  scrollbar-width: none;
 }
 
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;
+}
 
+* {
+  -ms-overflow-style: none;
+}
 
 body {
   font-family:
