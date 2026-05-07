@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 import Bodyweight from "./pages/Bodyweight";
 import ActiveWorkout from "./pages/ActiveWorkout";
 import WorkoutComplete from "./pages/WorkoutComplete";
+import History from "./pages/History";
 import { Toaster } from "sonner";
 
 function RootRedirect() {
@@ -83,8 +84,7 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/templates" element={<Templates />} />
-            <Route path="/workout" element={<ActiveWorkout />} />
-            <Route path="/history" element={<div>History</div>} />
+            <Route path="/history" element={<History />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/bodyweight" element={<Bodyweight />} />
           </Route>
