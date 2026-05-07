@@ -4,6 +4,8 @@ export interface IStrengthSet {
   weight: number;
   unit: "kg" | "lbs";
   isWarmup: boolean;
+  isDropSet?: boolean;
+  isFailure?: boolean;
 }
 
 export interface ICardioSet {
