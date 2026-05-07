@@ -28,9 +28,17 @@ export const loginUser = asyncHandler(async (req, res) => {
   res.cookie("accessToken", result.accessToken, cookieOptions);
   res.cookie("refreshToken", result.refreshToken, cookieOptions);
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, result.user, "User logged in Successfully"));
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        ...result.user,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      },
+      "User logged in Successfully",
+    ),
+  );
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
@@ -43,14 +51,25 @@ export const logoutUser = asyncHandler(async (req, res) => {
 });
 
 export const refreshToken = asyncHandler(async (req, res) => {
-  const result = await MongoAuthService.refreshToken(req.cookies.refreshToken);
+  const incomingRefreshToken =
+    req.cookies?.refreshToken || req.body?.refreshToken;
+
+  const result = await MongoAuthService.refreshToken(incomingRefreshToken);
 
   res.cookie("accessToken", result.accessToken, cookieOptions);
   res.cookie("refreshToken", result.refreshToken, cookieOptions);
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, result.user, "Tokens refreshed Successfully"));
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        ...result.user,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      },
+      "Tokens refreshed Successfully",
+    ),
+  );
 });
 
 export const verifyOtp = asyncHandler(async (req, res) => {

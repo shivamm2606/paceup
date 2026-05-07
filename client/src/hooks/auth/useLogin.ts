@@ -14,7 +14,9 @@ export const useLogin = () => {
     onSuccess: (data) => {
       const user = data.data;
       queryClient.setQueryData(["currentUser"], user);
-      useAuthStore.getState().setAuth(user);
+      useAuthStore
+        .getState()
+        .setAuth(user, user.accessToken, user.refreshToken);
 
       if (!user.userInfo?.gender) {
         navigate("/onboarding", { replace: true });

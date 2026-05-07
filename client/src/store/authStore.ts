@@ -1,29 +1,13 @@
 import { create } from "zustand";
-
-interface UserInfo {
-  height?: number;
-  currentWeight?: number;
-  targetWeight?: number;
-  gender?: "male" | "female" | "other";
-  dateOfBirth?: string;
-  activityLevel?: string;
-  goal?: string;
-  dailyCalorieGoal?: number;
-  isCalorieGoalAutoCalculated?: boolean;
-}
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  userInfo?: UserInfo;
-}
+import type { User } from "../types/user.types";
 
 interface AuthState {
   user: User | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  setAuth: (user: User) => void;
+  setAuth: (user: User, accessToken?: string, refreshToken?: string) => void;
   clearAuth: () => void;
   setLoading: (value: boolean) => void;
   needsOnboarding: () => boolean;
@@ -31,18 +15,24 @@ interface AuthState {
 
 const useAuthStore = create<AuthState>()((set, get) => ({
   user: null,
+  accessToken: null,
+  refreshToken: null,
   isAuthenticated: false,
   isLoading: true,
 
-  setAuth: (user) =>
+  setAuth: (user, accessToken?, refreshToken?) =>
     set({
       user,
       isAuthenticated: true,
+      ...(accessToken && { accessToken }),
+      ...(refreshToken && { refreshToken }),
     }),
 
   clearAuth: () =>
     set({
       user: null,
+      accessToken: null,
+      refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
     }),

@@ -20,6 +20,15 @@ function processQueue(error: unknown) {
   failedQueue = [];
 }
 
+// Attach access token to every request
+api.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().accessToken;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -45,7 +54,16 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      await api.post("/auth/refresh-token");
+      const refreshToken = useAuthStore.getState().refreshToken;
+      const res = await api.post("/auth/refresh-token", { refreshToken });
+      const { accessToken: newAccess, refreshToken: newRefresh } = res.data.data;
+
+      useAuthStore.getState().setAuth(
+        res.data.data,
+        newAccess,
+        newRefresh,
+      );
+
       processQueue(null);
       return api(originalRequest);
     } catch (refreshError) {
