@@ -25,7 +25,11 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status !== 401 || originalRequest._retry) {
+    if (
+      error.response?.status !== 401 ||
+      originalRequest._retry ||
+      originalRequest.url?.includes("/auth/")
+    ) {
       return Promise.reject(error);
     }
 
@@ -47,7 +51,6 @@ api.interceptors.response.use(
     } catch (refreshError) {
       processQueue(refreshError);
       useAuthStore.getState().clearAuth();
-      window.location.href = "/login";
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;
