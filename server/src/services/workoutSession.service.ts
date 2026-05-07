@@ -117,7 +117,11 @@ class MongoWorkoutSessionService implements IWorkoutSessionService {
   completeSession = async (
     sessionId: string,
     userId: string,
-    exerciseSets?: { exerciseId: string; sets: Omit<LogSetDto, 'exerciseId'>[]; notes?: string }[],
+    exerciseSets?: {
+      exerciseId: string;
+      sets: Omit<LogSetDto, "exerciseId">[];
+      notes?: string;
+    }[],
   ): Promise<IWorkoutSession> => {
     const session = await WorkoutSession.findById(sessionId);
 
@@ -193,6 +197,7 @@ class MongoWorkoutSessionService implements IWorkoutSessionService {
 
     const [sessions, total] = await Promise.all([
       WorkoutSession.find({ userId })
+        .populate("exercises.exerciseId", "name category muscleGroup")
         .sort({ date: -1 })
         .skip(skip)
         .limit(limit),

@@ -81,11 +81,16 @@ function ActiveWorkout() {
   // exercise menu & notes
   const [exerciseMenu, setExerciseMenu] = useState<string | null>(null);
   const [confirmRemoveEx, setConfirmRemoveEx] = useState<string | null>(null);
-  const [exerciseNotes, setExerciseNotes] = useState<Record<string, string>>({});
+  const [exerciseNotes, setExerciseNotes] = useState<Record<string, string>>(
+    {},
+  );
   const [editingNoteEx, setEditingNoteEx] = useState<string | null>(null);
 
   // set type picker popup
-  const [setTypePicker, setSetTypePicker] = useState<{ exId: string; draftIdx: number } | null>(null);
+  const [setTypePicker, setSetTypePicker] = useState<{
+    exId: string;
+    draftIdx: number;
+  } | null>(null);
 
   // draft rows per exercise — ALL sets live here (local state, saved on finish)
   const [draftRows, setDraftRows] = useState<Record<string, SetRowDraft[]>>({});
@@ -134,10 +139,13 @@ function ActiveWorkout() {
         reps: s.type === "strength" ? String(s.reps) : "",
         done: true,
         marker:
-          s.type === "strength" && s.isWarmup ? "warmup" as SetMarker
-          : s.type === "strength" && s.isDropSet ? "dropset" as SetMarker
-          : s.type === "strength" && s.isFailure ? "failure" as SetMarker
-          : "normal" as SetMarker,
+          s.type === "strength" && s.isWarmup
+            ? ("warmup" as SetMarker)
+            : s.type === "strength" && s.isDropSet
+              ? ("dropset" as SetMarker)
+              : s.type === "strength" && s.isFailure
+                ? ("failure" as SetMarker)
+                : ("normal" as SetMarker),
       }));
     }
     setDraftRows(initial);
@@ -218,10 +226,20 @@ function ActiveWorkout() {
             weight: s.type === "strength" ? String(s.weight) : "",
             reps: s.type === "strength" ? String(s.reps) : "",
             done: false,
-            marker: s.type === "strength" && s.isWarmup ? "warmup" as SetMarker : "normal" as SetMarker,
+            marker:
+              s.type === "strength" && s.isWarmup
+                ? ("warmup" as SetMarker)
+                : ("normal" as SetMarker),
           }));
         } else {
-          next[ex._id] = [{ weight: "", reps: "", done: false, marker: "normal" as SetMarker }];
+          next[ex._id] = [
+            {
+              weight: "",
+              reps: "",
+              done: false,
+              marker: "normal" as SetMarker,
+            },
+          ];
         }
       }
       return next;
@@ -233,7 +251,8 @@ function ActiveWorkout() {
   // count sets that have values but are not ticked
   const incompleteSets = useMemo(() => {
     return Object.values(draftRows).reduce(
-      (sum, rows) => sum + rows.filter((r) => !r.done && (r.weight || r.reps)).length,
+      (sum, rows) =>
+        sum + rows.filter((r) => !r.done && (r.weight || r.reps)).length,
       0,
     );
   }, [draftRows]);
@@ -275,7 +294,8 @@ function ActiveWorkout() {
     completeSession(
       { exercises: exercisesPayload },
       {
-        onSuccess: () => navigate(`/workout/${sid}/complete`, { replace: true }),
+        onSuccess: () =>
+          navigate(`/workout/${sid}/complete`, { replace: true }),
       },
     );
   };
@@ -389,13 +409,18 @@ function ActiveWorkout() {
             value={workoutName}
             onChange={(e) => setWorkoutName(e.target.value)}
             onBlur={() => setEditingName(false)}
-            onKeyDown={(e) => { if (e.key === "Enter") setEditingName(false); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") setEditingName(false);
+            }}
             autoFocus
             className="w-full bg-transparent text-[20px] font-black text-[#f0f0f5] tracking-tight outline-none border-b border-[#8b8b9a]/40 pb-1"
           />
         ) : (
           <button
-            onClick={() => { setEditingName(true); setTimeout(() => nameInputRef.current?.focus(), 50); }}
+            onClick={() => {
+              setEditingName(true);
+              setTimeout(() => nameInputRef.current?.focus(), 50);
+            }}
             className="text-left w-full"
           >
             <h1 className="text-[20px] font-black text-[#f0f0f5] tracking-tight">
@@ -404,9 +429,16 @@ function ActiveWorkout() {
           </button>
         )}
         <p className="text-[11px] text-[#8b8b9a] font-semibold mt-1">
-          {new Date(session.date).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}
+          {new Date(session.date).toLocaleDateString(undefined, {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+          })}
           {" · Started "}
-          {new Date(session.date).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
+          {new Date(session.date).toLocaleTimeString(undefined, {
+            hour: "numeric",
+            minute: "2-digit",
+          })}
         </p>
       </div>
 
@@ -440,14 +472,31 @@ function ActiveWorkout() {
       {/* Rest Timer Banner */}
       {(restTimer > 0 || restOver) && (
         <div className="max-w-[520px] mx-auto px-4 pt-2">
-          <div className={`border rounded-[12px] px-4 py-2.5 flex items-center justify-between ${restOver ? "bg-[#4ade80]/10 border-[#4ade80]/25" : "bg-[#1a1a24] border-[#24242e]"}`}>
+          <div
+            className={`border rounded-[12px] px-4 py-2.5 flex items-center justify-between ${restOver ? "bg-[#4ade80]/10 border-[#4ade80]/25" : "bg-[#1a1a24] border-[#24242e]"}`}
+          >
             <div className="flex items-center gap-2">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="9" stroke={restOver ? "#4ade80" : "#7b9dff"} strokeWidth="1.8" />
-                <path d="M12 8v4l2 2" stroke={restOver ? "#4ade80" : "#7b9dff"} strokeWidth="1.8" strokeLinecap="round" />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="9"
+                  stroke={restOver ? "#4ade80" : "#7b9dff"}
+                  strokeWidth="1.8"
+                />
+                <path
+                  d="M12 8v4l2 2"
+                  stroke={restOver ? "#4ade80" : "#7b9dff"}
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
               </svg>
-              <span className={`text-[13px] font-bold ${restOver ? "text-[#4ade80]" : "text-[#7b9dff]"}`}>
-                {restOver ? "Rest Over — Start Next Set!" : `Rest: ${formatTimer(restTimer)}`}
+              <span
+                className={`text-[13px] font-bold ${restOver ? "text-[#4ade80]" : "text-[#7b9dff]"}`}
+              >
+                {restOver
+                  ? "Rest Over — Start Next Set!"
+                  : `Rest: ${formatTimer(restTimer)}`}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -465,10 +514,13 @@ function ActiveWorkout() {
                   >
                     +15s
                   </button>
-                </>              
+                </>
               )}
               <button
-                onClick={() => { setRestTimer(0); setRestOver(false); }}
+                onClick={() => {
+                  setRestTimer(0);
+                  setRestOver(false);
+                }}
                 className="text-[11px] font-bold text-[#8b8b9a] hover:text-[#f0f0f5] ml-1"
               >
                 {restOver ? "Dismiss" : "Skip"}
@@ -516,7 +568,8 @@ function ActiveWorkout() {
               }
               if (prevSets.length > 0) {
                 const last = prevSets[prevSets.length - 1];
-                if (last.type === "strength") return `${last.weight} × ${last.reps}`;
+                if (last.type === "strength")
+                  return `${last.weight} × ${last.reps}`;
               }
               return "—";
             };
@@ -547,10 +600,17 @@ function ActiveWorkout() {
                   </div>
                   <div className="relative">
                     <button
-                      onClick={() => setExerciseMenu(exerciseMenu === ex.id ? null : ex.id)}
+                      onClick={() =>
+                        setExerciseMenu(exerciseMenu === ex.id ? null : ex.id)
+                      }
                       className="w-7 h-7 rounded-[8px] bg-[#1a1a24] border border-[#24242e] flex items-center justify-center text-[#8b8b9a] hover:text-[#f0f0f5] transition-colors"
                     >
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
                         <circle cx="12" cy="6" r="1.5" fill="currentColor" />
                         <circle cx="12" cy="12" r="1.5" fill="currentColor" />
                         <circle cx="12" cy="18" r="1.5" fill="currentColor" />
@@ -560,20 +620,43 @@ function ActiveWorkout() {
                     {/* Exercise popover menu */}
                     {exerciseMenu === ex.id && (
                       <>
-                        <div className="fixed inset-0 z-40" onClick={() => setExerciseMenu(null)} />
+                        <div
+                          className="fixed inset-0 z-40"
+                          onClick={() => setExerciseMenu(null)}
+                        />
                         <div className="absolute right-0 top-9 z-50 w-[180px] bg-[#1a1a24] border border-[#2a2a36] rounded-[14px] shadow-xl overflow-hidden animate-fade-in">
                           <button
                             onClick={() => {
-                              setEditingNoteEx(editingNoteEx === ex.id ? null : ex.id);
+                              setEditingNoteEx(
+                                editingNoteEx === ex.id ? null : ex.id,
+                              );
                               setExerciseMenu(null);
                             }}
                             className="w-full px-4 py-[11px] text-left text-[13px] font-semibold text-[#e0e0ea] hover:bg-[#24242e] transition-colors flex items-center gap-2.5"
                           >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                              <path d="M12 20h9" stroke="#7b9dff" strokeWidth="1.8" strokeLinecap="round" />
-                              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#7b9dff" strokeWidth="1.8" />
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <path
+                                d="M12 20h9"
+                                stroke="#7b9dff"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                              />
+                              <path
+                                d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                                stroke="#7b9dff"
+                                strokeWidth="1.8"
+                              />
                             </svg>
-                            {editingNoteEx === ex.id ? "Hide Notes" : exerciseNotes[ex.id] ? "Edit Note" : "Add Note"}
+                            {editingNoteEx === ex.id
+                              ? "Hide Notes"
+                              : exerciseNotes[ex.id]
+                                ? "Edit Note"
+                                : "Add Note"}
                           </button>
                           <div className="h-px bg-[#2a2a36]" />
                           <button
@@ -583,8 +666,19 @@ function ActiveWorkout() {
                             }}
                             className="w-full px-4 py-[11px] text-left text-[13px] font-semibold text-[#ef4444] hover:bg-[#24242e] transition-colors flex items-center gap-2.5"
                           >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                              <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <path
+                                d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12z"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
                             </svg>
                             Remove Exercise
                           </button>
@@ -599,7 +693,12 @@ function ActiveWorkout() {
                   <div className="px-4 pb-2">
                     <textarea
                       value={exerciseNotes[ex.id] ?? ""}
-                      onChange={(e) => setExerciseNotes(prev => ({ ...prev, [ex.id]: e.target.value }))}
+                      onChange={(e) =>
+                        setExerciseNotes((prev) => ({
+                          ...prev,
+                          [ex.id]: e.target.value,
+                        }))
+                      }
                       placeholder="Add a note for this exercise…"
                       rows={2}
                       autoFocus
@@ -669,117 +768,181 @@ function ActiveWorkout() {
                   {/* Unified Set Rows — all from draftRows */}
                   {rows.map((row, ri) => {
                     return (
-                    <div
-                      key={`row-${ri}`}
-                      className={`grid grid-cols-[36px_1fr_1fr_1fr_36px] gap-1 items-center py-[8px] border-b border-[#1a1a22] ${row.done ? "bg-[#f0f0f5]/[0.03] rounded-[6px]" : ""}`}
-                    >
-                      {/* Set # / Type picker trigger */}
-                      <div className="relative">
+                      <div
+                        key={`row-${ri}`}
+                        className={`grid grid-cols-[36px_1fr_1fr_1fr_36px] gap-1 items-center py-[8px] border-b border-[#1a1a22] ${row.done ? "bg-[#f0f0f5]/[0.03] rounded-[6px]" : ""}`}
+                      >
+                        {/* Set # / Type picker trigger */}
+                        <div className="relative">
+                          <button
+                            onClick={() =>
+                              setSetTypePicker(
+                                setTypePicker?.exId === ex.id &&
+                                  setTypePicker?.draftIdx === ri
+                                  ? null
+                                  : { exId: ex.id, draftIdx: ri },
+                              )
+                            }
+                            className={`text-[13px] font-bold text-center w-full rounded-[6px] py-0.5 transition-all ${
+                              row.marker === "warmup"
+                                ? "text-[#c8a247] bg-[#c8a247]/12"
+                                : row.marker === "dropset"
+                                  ? "text-[#a78bfa] bg-[#a78bfa]/12"
+                                  : row.marker === "failure"
+                                    ? "text-[#ef4444] bg-[#ef4444]/12"
+                                    : "text-[#8b8b9a]"
+                            }`}
+                          >
+                            {row.marker === "warmup"
+                              ? "W"
+                              : row.marker === "dropset"
+                                ? "D"
+                                : row.marker === "failure"
+                                  ? "F"
+                                  : ri + 1}
+                          </button>
+                          {setTypePicker?.exId === ex.id &&
+                            setTypePicker?.draftIdx === ri && (
+                              <>
+                                <div
+                                  className="fixed inset-0 z-40"
+                                  onClick={() => setSetTypePicker(null)}
+                                />
+                                <div className="absolute left-0 top-8 z-50 w-[140px] bg-[#1a1a24] border border-[#2a2a36] rounded-[12px] shadow-xl overflow-hidden animate-fade-in">
+                                  {[
+                                    {
+                                      key: "warmup" as SetMarker,
+                                      label: "Warmup",
+                                      color: "#c8a247",
+                                      icon: "W",
+                                    },
+                                    {
+                                      key: "dropset" as SetMarker,
+                                      label: "Drop Set",
+                                      color: "#a78bfa",
+                                      icon: "D",
+                                    },
+                                    {
+                                      key: "failure" as SetMarker,
+                                      label: "Failure",
+                                      color: "#ef4444",
+                                      icon: "F",
+                                    },
+                                  ].map((opt) => (
+                                    <button
+                                      key={opt.key}
+                                      onClick={() => {
+                                        updateDraftRow(ex.id, ri, {
+                                          marker:
+                                            row.marker === opt.key
+                                              ? "normal"
+                                              : opt.key,
+                                        });
+                                        setSetTypePicker(null);
+                                      }}
+                                      className={`w-full px-3 py-[9px] text-left text-[12px] font-semibold hover:bg-[#24242e] transition-colors flex items-center gap-2.5 ${
+                                        row.marker === opt.key
+                                          ? "bg-[#24242e]"
+                                          : ""
+                                      }`}
+                                      style={{ color: opt.color }}
+                                    >
+                                      <span
+                                        className="w-5 h-5 rounded-[5px] flex items-center justify-center text-[10px] font-extrabold"
+                                        style={{
+                                          background: `${opt.color}20`,
+                                          color: opt.color,
+                                        }}
+                                      >
+                                        {opt.icon}
+                                      </span>
+                                      {opt.label}
+                                      {row.marker === opt.key && (
+                                        <svg
+                                          className="ml-auto"
+                                          width="12"
+                                          height="12"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                        >
+                                          <path
+                                            d="M5 13l4 4L19 7"
+                                            stroke={opt.color}
+                                            strokeWidth="2.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          />
+                                        </svg>
+                                      )}
+                                    </button>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                        </div>
+                        <span className="text-[11px] text-[#8b8b9a] text-center truncate">
+                          {getPrev(ri)}
+                        </span>
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          placeholder="0"
+                          value={row.weight}
+                          onChange={(e) =>
+                            updateDraftRow(ex.id, ri, {
+                              weight: e.target.value,
+                            })
+                          }
+                          className={`w-full rounded-[8px] px-1 py-[6px] text-[14px] font-bold text-[#f0f0f5] text-center placeholder-[#555568] outline-none transition-colors tabular-nums ${
+                            row.done
+                              ? "bg-transparent border border-transparent focus:border-[#7b9dff]/30 focus:bg-[#0d0d12]"
+                              : "bg-[#0d0d12] border border-[#24242e] focus:border-[#7b9dff]/40"
+                          }`}
+                        />
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          placeholder="0"
+                          value={row.reps}
+                          onChange={(e) =>
+                            updateDraftRow(ex.id, ri, { reps: e.target.value })
+                          }
+                          className={`w-full rounded-[8px] px-1 py-[6px] text-[14px] font-bold text-[#f0f0f5] text-center placeholder-[#555568] outline-none transition-colors tabular-nums ${
+                            row.done
+                              ? "bg-transparent border border-transparent focus:border-[#7b9dff]/30 focus:bg-[#0d0d12]"
+                              : "bg-[#0d0d12] border border-[#24242e] focus:border-[#7b9dff]/40"
+                          }`}
+                        />
                         <button
-                          onClick={() => setSetTypePicker(
-                            setTypePicker?.exId === ex.id && setTypePicker?.draftIdx === ri
-                              ? null
-                              : { exId: ex.id, draftIdx: ri }
-                          )}
-                          className={`text-[13px] font-bold text-center w-full rounded-[6px] py-0.5 transition-all ${
-                            row.marker === "warmup" ? "text-[#c8a247] bg-[#c8a247]/12"
-                            : row.marker === "dropset" ? "text-[#a78bfa] bg-[#a78bfa]/12"
-                            : row.marker === "failure" ? "text-[#ef4444] bg-[#ef4444]/12"
-                            : "text-[#8b8b9a]"
+                          onClick={() => {
+                            updateDraftRow(ex.id, ri, { done: !row.done });
+                            if (!row.done) setRestTimer(restTarget);
+                          }}
+                          disabled={!row.weight || !row.reps}
+                          className={`w-[34px] h-[34px] rounded-full flex items-center justify-center mx-auto transition-all ${
+                            row.done
+                              ? "bg-[#4ade80]/15 text-[#4ade80] active:scale-90"
+                              : row.weight && row.reps
+                                ? "bg-[#1a1a24] border border-[#24242e] text-[#8b8b9a] hover:border-[#e0e0ea] hover:text-[#e0e0ea] active:scale-90"
+                                : "bg-[#1a1a24] border border-[#1e1e28] text-[#3a3a4a]"
                           }`}
                         >
-                          {row.marker === "warmup" ? "W"
-                            : row.marker === "dropset" ? "D"
-                            : row.marker === "failure" ? "F"
-                            : ri + 1}
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                          >
+                            <path
+                              d="M5 13l4 4L19 7"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
                         </button>
-                        {setTypePicker?.exId === ex.id && setTypePicker?.draftIdx === ri && (
-                          <>
-                            <div className="fixed inset-0 z-40" onClick={() => setSetTypePicker(null)} />
-                            <div className="absolute left-0 top-8 z-50 w-[140px] bg-[#1a1a24] border border-[#2a2a36] rounded-[12px] shadow-xl overflow-hidden animate-fade-in">
-                              {([
-                                { key: "warmup" as SetMarker, label: "Warmup", color: "#c8a247", icon: "W" },
-                                { key: "dropset" as SetMarker, label: "Drop Set", color: "#a78bfa", icon: "D" },
-                                { key: "failure" as SetMarker, label: "Failure", color: "#ef4444", icon: "F" },
-                              ]).map((opt) => (
-                                <button
-                                  key={opt.key}
-                                  onClick={() => {
-                                    updateDraftRow(ex.id, ri, {
-                                      marker: row.marker === opt.key ? "normal" : opt.key,
-                                    });
-                                    setSetTypePicker(null);
-                                  }}
-                                  className={`w-full px-3 py-[9px] text-left text-[12px] font-semibold hover:bg-[#24242e] transition-colors flex items-center gap-2.5 ${
-                                    row.marker === opt.key ? "bg-[#24242e]" : ""
-                                  }`}
-                                  style={{ color: opt.color }}
-                                >
-                                  <span className="w-5 h-5 rounded-[5px] flex items-center justify-center text-[10px] font-extrabold" style={{ background: `${opt.color}20`, color: opt.color }}>
-                                    {opt.icon}
-                                  </span>
-                                  {opt.label}
-                                  {row.marker === opt.key && (
-                                    <svg className="ml-auto" width="12" height="12" viewBox="0 0 24 24" fill="none">
-                                      <path d="M5 13l4 4L19 7" stroke={opt.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                  )}
-                                </button>
-                              ))}
-                            </div>
-                          </>
-                        )}
                       </div>
-                      <span className="text-[11px] text-[#8b8b9a] text-center truncate">
-                        {getPrev(ri)}
-                      </span>
-                      <input
-                        type="number"
-                        inputMode="decimal"
-                        placeholder="0"
-                        value={row.weight}
-                        onChange={(e) =>
-                          updateDraftRow(ex.id, ri, { weight: e.target.value })
-                        }
-                        className={`w-full rounded-[8px] px-1 py-[6px] text-[14px] font-bold text-[#f0f0f5] text-center placeholder-[#555568] outline-none transition-colors tabular-nums ${
-                          row.done
-                            ? "bg-transparent border border-transparent focus:border-[#7b9dff]/30 focus:bg-[#0d0d12]"
-                            : "bg-[#0d0d12] border border-[#24242e] focus:border-[#7b9dff]/40"
-                        }`}
-                      />
-                      <input
-                        type="number"
-                        inputMode="numeric"
-                        placeholder="0"
-                        value={row.reps}
-                        onChange={(e) =>
-                          updateDraftRow(ex.id, ri, { reps: e.target.value })
-                        }
-                        className={`w-full rounded-[8px] px-1 py-[6px] text-[14px] font-bold text-[#f0f0f5] text-center placeholder-[#555568] outline-none transition-colors tabular-nums ${
-                          row.done
-                            ? "bg-transparent border border-transparent focus:border-[#7b9dff]/30 focus:bg-[#0d0d12]"
-                            : "bg-[#0d0d12] border border-[#24242e] focus:border-[#7b9dff]/40"
-                        }`}
-                      />
-                      <button
-                        onClick={() => {
-                          updateDraftRow(ex.id, ri, { done: !row.done });
-                          if (!row.done) setRestTimer(restTarget);
-                        }}
-                        disabled={!row.weight || !row.reps}
-                        className={`w-[34px] h-[34px] rounded-full flex items-center justify-center mx-auto transition-all ${
-                          row.done
-                            ? "bg-[#4ade80]/15 text-[#4ade80] active:scale-90"
-                            : row.weight && row.reps
-                              ? "bg-[#1a1a24] border border-[#24242e] text-[#8b8b9a] hover:border-[#e0e0ea] hover:text-[#e0e0ea] active:scale-90"
-                              : "bg-[#1a1a24] border border-[#1e1e28] text-[#3a3a4a]"
-                        }`}
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                          <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </button>
-                    </div>
                     );
                   })}
 
@@ -894,7 +1057,8 @@ function ActiveWorkout() {
               Incomplete Sets
             </p>
             <p className="text-[13px] text-[#8b8b9a] mb-5">
-              You have {incompleteSets} set{incompleteSets !== 1 ? "s" : ""} that haven't been logged. What do you want to do?
+              You have {incompleteSets} set{incompleteSets !== 1 ? "s" : ""}{" "}
+              that haven't been logged. What do you want to do?
             </p>
             <div className="flex gap-3">
               <button

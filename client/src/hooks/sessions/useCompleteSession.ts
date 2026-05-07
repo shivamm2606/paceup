@@ -17,7 +17,9 @@ export const useCompleteSession = (sessionId: string) => {
 
   return useMutation({
     mutationFn: (data?: CompleteSessionPayload) =>
-      api.patch(`/workout-session/${sessionId}/complete`, data ?? {}).then((r) => r.data),
+      api
+        .patch(`/workout-session/${sessionId}/complete`, data ?? {})
+        .then((r) => r.data),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["session", sessionId] });
