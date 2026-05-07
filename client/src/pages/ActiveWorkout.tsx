@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSession } from "../hooks/sessions/useSession";
 import { useAddExerciseToSession } from "../hooks/sessions/useAddExerciseToSession";
@@ -53,6 +53,18 @@ function getExInfo(ex: unknown): {
   };
 }
 
+function getMarker(set: {
+  type: string;
+  isWarmup?: boolean;
+  isDropSet?: boolean;
+  isFailure?: boolean;
+}): SetMarker {
+  if (set.type === "strength" && set.isWarmup) return "warmup";
+  if (set.type === "strength" && set.isDropSet) return "dropset";
+  if (set.type === "strength" && set.isFailure) return "failure";
+  return "normal";
+}
+
 function ActiveWorkout() {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
@@ -78,7 +90,7 @@ function ActiveWorkout() {
   const nameInputRef = useRef<HTMLInputElement>(null);
   const nameInitialized = useRef(false);
 
-  // exercise menu & notes
+  // menus
   const [exerciseMenu, setExerciseMenu] = useState<string | null>(null);
   const [confirmRemoveEx, setConfirmRemoveEx] = useState<string | null>(null);
   const [exerciseNotes, setExerciseNotes] = useState<Record<string, string>>(
@@ -86,17 +98,17 @@ function ActiveWorkout() {
   );
   const [editingNoteEx, setEditingNoteEx] = useState<string | null>(null);
 
-  // set type picker popup
+  // type picker
   const [setTypePicker, setSetTypePicker] = useState<{
     exId: string;
     draftIdx: number;
   } | null>(null);
 
-  // draft rows per exercise — ALL sets live here (local state, saved on finish)
+  // drafts
   const [draftRows, setDraftRows] = useState<Record<string, SetRowDraft[]>>({});
   const setsInitialized = useRef(false);
 
-  // rest timer
+  // rest
   const [restTimer, setRestTimer] = useState(0);
   const [restTarget, setRestTarget] = useState(120);
   const [restOver, setRestOver] = useState(false);
@@ -108,9 +120,9 @@ function ActiveWorkout() {
         const next = Math.max(0, t - 1);
         if (next === 0) {
           setRestOver(true);
-          // auto-dismiss "Rest Over" after 3s
+          
           setTimeout(() => setRestOver(false), 3000);
-          // vibrate if supported
+          
           if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
         }
         return next;
@@ -119,7 +131,7 @@ function ActiveWorkout() {
     return () => clearInterval(id);
   }, [restTimer]);
 
-  // sync workout name from session (once)
+  // sync name
   useEffect(() => {
     if (session?.name && !nameInitialized.current) {
       setWorkoutName(session.name);
@@ -127,7 +139,7 @@ function ActiveWorkout() {
     }
   }, [session?.name]);
 
-  // initialize draft rows from server-logged sets (once on mount)
+  // init drafts
   useEffect(() => {
     if (!session || setsInitialized.current) return;
     setsInitialized.current = true;
@@ -138,20 +150,13 @@ function ActiveWorkout() {
         weight: s.type === "strength" ? String(s.weight) : "",
         reps: s.type === "strength" ? String(s.reps) : "",
         done: true,
-        marker:
-          s.type === "strength" && s.isWarmup
-            ? ("warmup" as SetMarker)
-            : s.type === "strength" && s.isDropSet
-              ? ("dropset" as SetMarker)
-              : s.type === "strength" && s.isFailure
-                ? ("failure" as SetMarker)
-                : ("normal" as SetMarker),
+        marker: getMarker(s),
       }));
     }
     setDraftRows(initial);
   }, [session]);
 
-  // live elapsed
+  // elapsed
   useEffect(() => {
     if (!session?.date) return;
     const start = new Date(session.date).getTime();
@@ -171,11 +176,7 @@ function ActiveWorkout() {
     return session.exercises.map((e) => getExInfo(e.exerciseId).id);
   }, [session]);
 
-  // get or create draft rows for an exercise
-  const getRows = useCallback(
-    (exId: string): SetRowDraft[] => draftRows[exId] ?? [],
-    [draftRows],
-  );
+  const getRows = (exId: string): SetRowDraft[] => draftRows[exId] ?? [];
 
   const addDraftRow = (exId: string, prefillWeight = "", prefillReps = "") => {
     setDraftRows((prev) => ({
@@ -215,7 +216,7 @@ function ActiveWorkout() {
   const handleAddExercises = (exercises: { _id: string }[]) => {
     exercises.forEach((ex) => addExercise({ exerciseId: ex._id }));
 
-    // Pre-populate draft rows from previous session data
+    // prefill from prev
     setDraftRows((prev) => {
       const next = { ...prev };
       for (const ex of exercises) {
@@ -226,19 +227,11 @@ function ActiveWorkout() {
             weight: s.type === "strength" ? String(s.weight) : "",
             reps: s.type === "strength" ? String(s.reps) : "",
             done: false,
-            marker:
-              s.type === "strength" && s.isWarmup
-                ? ("warmup" as SetMarker)
-                : ("normal" as SetMarker),
+            marker: getMarker(s),
           }));
         } else {
           next[ex._id] = [
-            {
-              weight: "",
-              reps: "",
-              done: false,
-              marker: "normal" as SetMarker,
-            },
+            { weight: "", reps: "", done: false, marker: "normal" },
           ];
         }
       }
@@ -248,7 +241,7 @@ function ActiveWorkout() {
     setShowPicker(false);
   };
 
-  // count sets that have values but are not ticked
+  // incomplete count
   const incompleteSets = useMemo(() => {
     return Object.values(draftRows).reduce(
       (sum, rows) =>
@@ -269,7 +262,7 @@ function ActiveWorkout() {
     setConfirmFinish(false);
     if (!session) return;
 
-    // Build exercise sets payload from all done draft rows
+    // build payload
     const exercisesPayload = session.exercises.map((exLog) => {
       const exId = getExInfo(exLog.exerciseId).id;
       const rows = draftRows[exId] ?? [];
@@ -374,7 +367,7 @@ function ActiveWorkout() {
 
   return (
     <div className="min-h-screen bg-[#0b0b10] text-[#f0f0f5]">
-      {/* Sticky Header */}
+      {/* header */}
       <div className="sticky top-0 z-30 bg-[#0b0b10]/95 backdrop-blur-md border-b border-[#1a1a22]">
         <div className="max-w-[520px] mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -400,7 +393,7 @@ function ActiveWorkout() {
         </div>
       </div>
 
-      {/* Workout Name + Date */}
+      {/* name */}
       <div className="max-w-[520px] mx-auto px-4 pt-4 pb-1">
         {editingName ? (
           <input
@@ -442,7 +435,7 @@ function ActiveWorkout() {
         </p>
       </div>
 
-      {/* Stats Row */}
+      {/* stats */}
       <div className="max-w-[520px] mx-auto px-4 pt-3 pb-1 flex gap-[10px]">
         <StatPill label="Exercises" value={session.exercises.length} />
         <StatPill label="Sets" value={totalSets} />
@@ -453,7 +446,7 @@ function ActiveWorkout() {
         />
       </div>
 
-      {/* Unit Toggle */}
+      {/* unit */}
       <div className="max-w-[520px] mx-auto px-4 pt-2 pb-1 flex items-center gap-1">
         <span className="text-[10px] font-semibold text-[#8b8b9a] mr-1">
           Unit:
@@ -469,7 +462,7 @@ function ActiveWorkout() {
         ))}
       </div>
 
-      {/* Rest Timer Banner */}
+      {/* rest timer */}
       {(restTimer > 0 || restOver) && (
         <div className="max-w-[520px] mx-auto px-4 pt-2">
           <div
@@ -530,7 +523,7 @@ function ActiveWorkout() {
         </div>
       )}
 
-      {/* Exercise Cards */}
+      {/* exercises */}
       <div className="max-w-[520px] mx-auto px-4 pt-3 pb-[140px]">
         {session.exercises.length === 0 && (
           <div className="flex flex-col items-center py-16 gap-3">
@@ -559,7 +552,7 @@ function ActiveWorkout() {
             const mc = getMuscleColor(ex.muscle);
             const rows = getRows(ex.id);
 
-            // get previous set data from last completed session
+            // prev sets
             const prevSets = previousMap.get(ex.id) ?? [];
             const getPrev = (idx: number): string => {
               if (idx < prevSets.length) {
@@ -579,7 +572,7 @@ function ActiveWorkout() {
                 key={`${ex.id}-${exIdx}`}
                 className="bg-[#13131a] border border-[#1e1e28] rounded-[18px]"
               >
-                {/* Exercise Title */}
+                {/* title */}
                 <div className="flex items-center justify-between px-4 pt-3.5 pb-2">
                   <div className="flex items-center gap-2 min-w-0">
                     <p className="text-[14px] font-extrabold text-[#f0f0f5] tracking-tight truncate">
@@ -617,7 +610,7 @@ function ActiveWorkout() {
                       </svg>
                     </button>
 
-                    {/* Exercise popover menu */}
+                    {/* menu */}
                     {exerciseMenu === ex.id && (
                       <>
                         <div
@@ -688,7 +681,7 @@ function ActiveWorkout() {
                   </div>
                 </div>
 
-                {/* Exercise note editor */}
+                {/* notes */}
                 {editingNoteEx === ex.id && (
                   <div className="px-4 pb-2">
                     <textarea
@@ -707,7 +700,7 @@ function ActiveWorkout() {
                   </div>
                 )}
 
-                {/* Show saved note (when not editing) */}
+                {/* saved note */}
                 {editingNoteEx !== ex.id && exerciseNotes[ex.id] && (
                   <div className="px-4 pb-2">
                     <p className="text-[11px] text-[#7b9dff]/80 italic leading-snug">
@@ -716,7 +709,7 @@ function ActiveWorkout() {
                   </div>
                 )}
 
-                {/* Remove exercise confirm */}
+                {/* confirm remove */}
                 {confirmRemoveEx === ex.id && (
                   <div className="px-4 pb-2">
                     <div className="bg-[#ef4444]/[0.06] border border-[#ef4444]/20 rounded-[12px] px-4 py-3 flex items-center justify-between">
@@ -744,9 +737,9 @@ function ActiveWorkout() {
                   </div>
                 )}
 
-                {/* Table */}
+                {/* table */}
                 <div className="px-3">
-                  {/* Header Row */}
+                  {/* header */}
                   <div className="grid grid-cols-[36px_1fr_1fr_1fr_36px] gap-1 py-2 border-b border-[#1e1e28]">
                     <span className="text-[10px] font-bold text-[#8b8b9a] text-center">
                       SET
@@ -765,14 +758,14 @@ function ActiveWorkout() {
                     </span>
                   </div>
 
-                  {/* Unified Set Rows — all from draftRows */}
+                  {/* rows */}
                   {rows.map((row, ri) => {
                     return (
                       <div
                         key={`row-${ri}`}
                         className={`grid grid-cols-[36px_1fr_1fr_1fr_36px] gap-1 items-center py-[8px] border-b border-[#1a1a22] ${row.done ? "bg-[#f0f0f5]/[0.03] rounded-[6px]" : ""}`}
                       >
-                        {/* Set # / Type picker trigger */}
+                        {/* set # */}
                         <div className="relative">
                           <button
                             onClick={() =>
@@ -946,7 +939,7 @@ function ActiveWorkout() {
                     );
                   })}
 
-                  {/* + Add Set Button */}
+                  {/* add set */}
                   <button
                     onClick={() => {
                       const lastRow = rows[rows.length - 1];
@@ -975,7 +968,7 @@ function ActiveWorkout() {
           })}
         </div>
 
-        {/* Add Exercise */}
+        {/* add exercise */}
         <button
           onClick={() => setShowPicker(true)}
           className="w-full mt-5 py-[14px] rounded-[16px] bg-[#7b9dff]/10 border border-[#7b9dff]/25 text-[14px] font-extrabold text-[#7b9dff] hover:bg-[#7b9dff]/18 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
@@ -991,7 +984,7 @@ function ActiveWorkout() {
           Add Exercises
         </button>
 
-        {/* Rest Timer Config */}
+        {/* rest config */}
         <div className="mt-4 flex items-center justify-center gap-2">
           <span className="text-[10px] font-semibold text-[#8b8b9a]">
             Rest timer:
@@ -1008,7 +1001,7 @@ function ActiveWorkout() {
         </div>
       </div>
 
-      {/* Discard Modal */}
+      {/* discard */}
       {confirmDiscard && (
         <div
           className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center px-6"
@@ -1043,7 +1036,7 @@ function ActiveWorkout() {
         </div>
       )}
 
-      {/* Incomplete Sets Warning Modal */}
+      {/* incomplete warning */}
       {confirmFinish && (
         <div
           className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center px-6"

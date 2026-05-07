@@ -289,7 +289,7 @@ function Templates() {
         )}
       </div>
 
-      {/* Floating + button for My Templates when list is not empty */}
+      {/* fab */}
       {activeTab === "mine" && myTemplates.length > 0 && (
         <button
           onClick={() => setShowCreate(true)}

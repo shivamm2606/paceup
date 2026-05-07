@@ -86,7 +86,7 @@ export function TemplateDetailSheet({
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
-            {/* Edit button — owner only */}
+            {/* edit */}
             {isOwner && onEdit && (
               <button
                 onClick={() => onEdit(template)}
@@ -223,7 +223,7 @@ export function TemplateDetailSheet({
               className="flex gap-2.5"
               style={{ animation: "fadeSlideUp 0.2s ease-out" }}
             >
-              {/* Delete button — owner only */}
+              {/* delete */}
               {isOwner && (
                 <button
                   onClick={() => setConfirmDelete(true)}

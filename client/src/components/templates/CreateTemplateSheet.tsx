@@ -356,7 +356,7 @@ export function CreateTemplateSheet({ onClose, editTemplate }: Props) {
                         </button>
                       </div>
 
-                      {/* Notes input — expanded */}
+                      {/* notes */}
                       {notesOpen && (
                         <div
                           className="mx-[14px] mt-1 mb-1"

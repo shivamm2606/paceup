@@ -58,7 +58,7 @@ export function EditProfileSheet({ onClose }: Props) {
   const [goal, setGoal] = useState(user?.userInfo?.goal ?? "");
 
   const handleSave = () => {
-    // Only send fields that changed
+    // diff
     const accountData: Record<string, string> = {};
     if (name.trim() && name.trim() !== user?.name)
       accountData.name = name.trim();

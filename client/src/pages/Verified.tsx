@@ -20,7 +20,7 @@ function Verified() {
 
   return (
     <div className="min-h-[100svh] bg-[#08080c] text-[#f0f0f5] px-5 relative overflow-hidden flex items-center justify-center">
-      {/* Background effects — same as auth pages */}
+      {/* bg */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-[-80px] left-1/2 -translate-x-1/2 w-[500px] h-[280px] rounded-full bg-[rgba(71,184,255,0.06)] blur-[90px]" />
         <div className="absolute bottom-[-40px] right-[-60px] w-[280px] h-[280px] rounded-full bg-[rgba(71,184,255,0.04)] blur-[80px]" />

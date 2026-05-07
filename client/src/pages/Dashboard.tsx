@@ -99,44 +99,28 @@ function Dashboard() {
     return { weeklyCount, diff };
   }, [allSessions]);
 
-  const formattedDate = useMemo(() => {
-    return new Date().toLocaleDateString(undefined, {
-      weekday: "long",
-      day: "numeric",
-      month: "short",
-    });
-  }, []);
+  const formattedDate = new Date().toLocaleDateString(undefined, {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+  });
 
   const streak = useMemo(() => {
     if (allSessions.length === 0) return 0;
-
-    const sessionDays = new Set(
+    const days = new Set(
       allSessions.map((s) => new Date(s.date).toDateString()),
     );
-
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
-    // If the user trained today, count starts from today (offset 0).
-    // Otherwise, start from yesterday (offset 1) - if yesterday also has
-    // no session the while-loop breaks immediately, returning streak = 0.
-    const startOffset = sessionDays.has(today.toDateString()) ? 0 : 1;
-
     let count = 0;
-    let i = startOffset;
-
+    let i = days.has(today.toDateString()) ? 0 : 1;
     while (true) {
-      const day = new Date(today);
-      day.setDate(today.getDate() - i);
-
-      if (sessionDays.has(day.toDateString())) {
-        count++;
-        i++;
-      } else {
-        break;
-      }
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      if (!days.has(d.toDateString())) break;
+      count++;
+      i++;
     }
-
     return count;
   }, [allSessions]);
 
