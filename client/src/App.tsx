@@ -7,10 +7,15 @@ import api from "./lib/axios";
 import useAuthStore from "./store/authStore";
 import Register from "./pages/Register";
 import VerifyOtp from "./pages/VerifyOtp";
+import Verified from "./pages/Verified";
 import MainLayout from "./layouts/MainLayout";
 import Welcome from "./pages/Welcome";
 import Onboarding from "./pages/Onboarding";
 import Templates from "./pages/Templates";
+import Profile from "./pages/Profile";
+import Bodyweight from "./pages/Bodyweight";
+import ActiveWorkout from "./pages/ActiveWorkout";
+import WorkoutComplete from "./pages/WorkoutComplete";
 import { Toaster } from "sonner";
 
 function RootRedirect() {
@@ -63,17 +68,25 @@ function App() {
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
+        <Route path="/verified" element={<Verified />} />
         <Route path="/register" element={<Register />} />
 
         {/* protected + layout */}
         <Route element={<ProtectedRoute />}>
           <Route path="/onboarding" element={<Onboarding />} />
+          {/* Workout pages — no bottom nav */}
+          <Route path="/workout/:sessionId" element={<ActiveWorkout />} />
+          <Route
+            path="/workout/:sessionId/complete"
+            element={<WorkoutComplete />}
+          />
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/templates" element={<Templates />} />
-            <Route path="/workout" element={<div>Workout</div>} />
+            <Route path="/workout" element={<ActiveWorkout />} />
             <Route path="/history" element={<div>History</div>} />
-            <Route path="/profile" element={<div>Profile</div>} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/bodyweight" element={<Bodyweight />} />
           </Route>
         </Route>
       </Routes>
@@ -82,4 +95,3 @@ function App() {
 }
 
 export default App;
-
