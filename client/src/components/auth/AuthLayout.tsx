@@ -23,7 +23,7 @@ export function AuthLayout({ children, onBack, hideBack }: AuthLayoutProps) {
         }}
       />
 
-      <div className="w-full max-w-[400px] mx-auto relative z-10 pt-[max(env(safe-area-inset-top),16px)] pb-10">
+      <div className="w-full max-w-[400px] mx-auto relative z-10" style={{ paddingTop: "calc(16px + env(safe-area-inset-top))", paddingBottom: "calc(40px + env(safe-area-inset-bottom))" }}>
         {!hideBack && (
           <button
             onClick={onBack ?? (() => navigate(-1))}

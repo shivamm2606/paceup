@@ -94,7 +94,7 @@ function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#1f1f26] bg-[#14141b]/95 backdrop-blur-md shadow-[0_-8px_20px_rgba(0,0,0,0.35)]">
-      <div className="mx-auto grid w-full max-w-[560px] grid-cols-4 px-[16px] pt-[6px] pb-[calc(8px+env(safe-area-inset-bottom))]">
+      <div className="mx-auto grid w-full max-w-[560px] grid-cols-4 px-[16px] pt-[6px] pb-1" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
         {navItems.map((item) => {
           const active =
             pathname === item.path || pathname.startsWith(item.path + "/");

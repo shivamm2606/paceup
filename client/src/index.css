@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+html {
+  height: 100%;
+  height: -webkit-fill-available;
+  background: #0b0b10;
+}
+
+
+
 body {
   font-family:
     "Manrope",
@@ -8,6 +16,10 @@ body {
     -apple-system,
     "Segoe UI",
     sans-serif;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+  background: #0b0b10;
+  overscroll-behavior: none;
 }
 
 h1,
