@@ -13,7 +13,7 @@ export const useDeleteAccount = () => {
     onSuccess: () => {
       useAuthStore.getState().clearAuth();
       queryClient.clear();
-      navigate("/welcome", { replace: true });
+      navigate("/", { replace: true });
       toast.success("Account deleted");
     },
     onError: () => {
