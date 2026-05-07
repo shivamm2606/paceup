@@ -13,29 +13,49 @@ interface AuthState {
   needsOnboarding: () => boolean;
 }
 
+// Read tokens from localStorage
+function getStoredTokens() {
+  try {
+    return {
+      accessToken: localStorage.getItem("accessToken"),
+      refreshToken: localStorage.getItem("refreshToken"),
+    };
+  } catch {
+    return { accessToken: null, refreshToken: null };
+  }
+}
+
+const stored = getStoredTokens();
+
 const useAuthStore = create<AuthState>()((set, get) => ({
   user: null,
-  accessToken: null,
-  refreshToken: null,
+  accessToken: stored.accessToken,
+  refreshToken: stored.refreshToken,
   isAuthenticated: false,
   isLoading: true,
 
-  setAuth: (user, accessToken?, refreshToken?) =>
+  setAuth: (user, accessToken?, refreshToken?) => {
+    if (accessToken) localStorage.setItem("accessToken", accessToken);
+    if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
     set({
       user,
       isAuthenticated: true,
       ...(accessToken && { accessToken }),
       ...(refreshToken && { refreshToken }),
-    }),
+    });
+  },
 
-  clearAuth: () =>
+  clearAuth: () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     set({
       user: null,
       accessToken: null,
       refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
-    }),
+    });
+  },
 
   setLoading: (value: boolean) => set({ isLoading: value }),
 
