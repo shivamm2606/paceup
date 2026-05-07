@@ -60,7 +60,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 function Dashboard() {
   const navigate = useNavigate();
   const { data: user } = useCurrentUser();
-  const { data: sessions } = useWorkoutSessions();
+  const { data: sessions, isFetched } = useWorkoutSessions();
   const { data: bwLogs } = useBodyweightLog();
 
   const latestBW = bwLogs?.entries?.[0];
@@ -72,9 +72,10 @@ function Dashboard() {
 
   // auto-resume active workout
   useEffect(() => {
+    if (!isFetched) return;
     const active = allSessions.find((s) => s.status === "active");
     if (active) navigate(`/workout/${active._id}`, { replace: true });
-  }, [allSessions, navigate]);
+  }, [allSessions, isFetched, navigate]);
 
   const lastSession = useMemo(
     () =>

@@ -9,33 +9,13 @@ export const useDeleteSession = (sessionId: string) => {
     mutationFn: () =>
       api.delete(`/workout-session/${sessionId}`).then((r) => r.data),
 
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["session", sessionId] });
-      await queryClient.cancelQueries({ queryKey: ["AllWorkoutSessions"] });
-
-      // Immediately remove this session from every matching cache entry
-      queryClient.setQueriesData(
-        { queryKey: ["AllWorkoutSessions"] },
-        (old: unknown) => {
-          if (!old || typeof old !== "object") return old;
-          const data = old as { sessions?: { _id: string }[] };
-          if (!data.sessions) return old;
-          return {
-            ...data,
-            sessions: data.sessions.filter((s) => s._id !== sessionId),
-          };
-        },
-      );
-
-      // Also remove the individual session query
-      queryClient.removeQueries({ queryKey: ["session", sessionId] });
-    },
     onSuccess: () => {
+      // Remove session queries and refetch the list
+      queryClient.removeQueries({ queryKey: ["session", sessionId] });
       queryClient.invalidateQueries({ queryKey: ["AllWorkoutSessions"] });
       toast.success("Workout discarded");
     },
     onError: () => {
-      queryClient.invalidateQueries({ queryKey: ["AllWorkoutSessions"] });
       toast.error("Failed to discard workout");
     },
   });
