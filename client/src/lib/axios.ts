@@ -56,13 +56,10 @@ api.interceptors.response.use(
     try {
       const refreshToken = useAuthStore.getState().refreshToken;
       const res = await api.post("/auth/refresh-token", { refreshToken });
-      const { accessToken: newAccess, refreshToken: newRefresh } = res.data.data;
+      const { accessToken: newAccess, refreshToken: newRefresh } =
+        res.data.data;
 
-      useAuthStore.getState().setAuth(
-        res.data.data,
-        newAccess,
-        newRefresh,
-      );
+      useAuthStore.getState().setAuth(res.data.data, newAccess, newRefresh);
 
       processQueue(null);
       return api(originalRequest);
