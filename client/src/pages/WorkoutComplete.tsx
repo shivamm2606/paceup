@@ -6,7 +6,8 @@ import {
   getMuscleColor,
   formatMuscle,
 } from "../components/templates/templateUtils";
-import type { ISetLog } from "../types/workoutSession.types";
+import type { ISetLog, PaginatedSessions } from "../types/workoutSession.types";
+import type { ApiSuccessResponse } from "../types/apiErrorResponse";
 
 interface PopulatedExercise {
   _id: string;
@@ -225,7 +226,28 @@ function WorkoutComplete() {
         {/* Action Button */}
         <button
           onClick={() => {
-            queryClient.invalidateQueries({ queryKey: ["AllWorkoutSessions"] });
+            // session is marked completed in the sessions list cache
+            queryClient.setQueryData<ApiSuccessResponse<PaginatedSessions>>(
+              ["AllWorkoutSessions"],
+              (old) => {
+                if (!old) return old;
+                return {
+                  ...old,
+                  data: {
+                    ...old.data,
+                    sessions: old.data.sessions.map((s) =>
+                      s._id === sessionId
+                        ? { ...s, status: "completed" as const }
+                        : s,
+                    ),
+                  },
+                };
+              },
+            );
+
+            queryClient.removeQueries({
+              queryKey: ["session", sessionId],
+            });
             navigate("/dashboard", { replace: true });
           }}
           className="w-full py-[14px] rounded-[14px] bg-[#4ade80] text-[#0b0b10] text-[15px] font-extrabold tracking-tight hover:bg-[#5ae88d] active:scale-[0.98] transition-all duration-150 mb-10"

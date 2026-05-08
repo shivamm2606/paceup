@@ -3,7 +3,7 @@ import { useCurrentUser } from "../hooks/user/useCurrentUser";
 import { useWorkoutSessions } from "../hooks/sessions/useWorkoutSessions";
 import { getGreeting } from "../utils/getGreeting";
 import { useNavigate } from "react-router-dom";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { StartWorkoutModal } from "../components/StartWorkoutModal";
 import { DashboardHeader } from "../components/dashboard/DashboardHeader";
 import { WorkoutCTA } from "../components/dashboard/WorkoutCTA";
@@ -71,8 +71,10 @@ function Dashboard() {
   const allSessions = useMemo(() => sessions?.sessions ?? [], [sessions]);
 
   // auto-resume active workout
+  const hasCheckedResume = useRef(false);
   useEffect(() => {
-    if (!isFetched) return;
+    if (!isFetched || hasCheckedResume.current) return;
+    hasCheckedResume.current = true;
     const active = allSessions.find((s) => s.status === "active");
     if (active) navigate(`/workout/${active._id}`, { replace: true });
   }, [allSessions, isFetched, navigate]);
