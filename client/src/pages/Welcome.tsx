@@ -81,12 +81,6 @@ function DesktopView() {
     }
   }, [appUrl]);
 
-  const footerLinks = [
-    { label: "Features", href: "#features" },
-    { label: "Install", href: "#install" },
-    { label: "GitHub", href: "https://github.com/shivamm2606/rep-up" },
-  ];
-
   const features = [
     {
       icon: "🏋️",
