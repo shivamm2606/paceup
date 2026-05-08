@@ -24,8 +24,9 @@ export const useLogin = () => {
         navigate("/dashboard", { replace: true });
       }
     },
-    onError: (error: any, variables) => {
+    onError: async (error: any, variables) => {
       if (error?.response?.data?.message === "Email not verified") {
+        await api.post("/auth/resend-otp", { email: variables.email });
         navigate("/verify-otp", { state: { email: variables.email } });
       }
     },
