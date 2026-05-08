@@ -24,5 +24,10 @@ export const useLogin = () => {
         navigate("/dashboard", { replace: true });
       }
     },
+    onError: (error: any, variables) => {
+      if (error?.response?.data?.message === "Email not verified") {
+        navigate("/verify-otp", { state: { email: variables.email } });
+      }
+    },
   });
 };
