@@ -12,14 +12,28 @@ import jwt from "jsonwebtoken";
 import { generateOTP, getOTPExpiry } from "../utils/otp.js";
 import { sendEmail } from "../utils/mailer.js";
 import crypto from "crypto";
+import {
+  getResetPasswordHtml,
+  getResendOtpHtml,
+  getVerifyEmailHtml,
+} from "../utils/mailTemplates.js";
+
 class MongoAuthService implements IAuthService {
   registerUser = async (dto: RegisterDto): Promise<RegisterResut> => {
     const { name, email, username, password } = dto;
 
-    const user = await User.findOne({ $or: [{ email }, { username }] });
+    const existingUsers = await User.find({ $or: [{ email }, { username }] });
 
-    if (user) {
-      throw new ApiError(400, "Email or username already in use.");
+    for (const user of existingUsers) {
+      if (user.isVerified) {
+        throw new ApiError(400, "Email or username already in use.");
+      }
+    }
+
+    if (existingUsers.length > 0) {
+      await User.deleteMany({
+        _id: { $in: existingUsers.map((user) => user._id) },
+      });
     }
 
     const otp = generateOTP();
@@ -38,20 +52,15 @@ class MongoAuthService implements IAuthService {
       throw new ApiError(500, "User creation failed.");
     }
 
-    await sendEmail(
-      email,
-      "Verify your RepUp account",
-      `<div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; padding: 32px; border: 1px solid #e0e0e0; border-radius: 8px;">
-  <h2 style="color: #111;">Verify your RepUp account</h2>
-  <p style="color: #444;">Thanks for signing up! Use the OTP below to verify your email address.</p>
-  <div style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #111; background: #f5f5f5; padding: 16px; text-align: center; border-radius: 6px; margin: 24px 0;">
-    ${otp}
-  </div>
-  <p style="color: #888; font-size: 13px;">This OTP expires in <strong>10 minutes</strong>. Do not share it with anyone.</p>
-  <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 24px 0;">
-  <p style="color: #aaa; font-size: 12px;">If you didn't create a RepUp account, ignore this email.</p>
-</div>`,
-    );
+    try {
+      await sendEmail(
+        email,
+        "Verify your RepUp account",
+        getVerifyEmailHtml(otp),
+      );
+    } catch {
+      throw new ApiError(500, "Failed to send OTP email. Please try again.");
+    }
 
     return {
       _id: newUser._id.toString(),
@@ -128,8 +137,8 @@ class MongoAuthService implements IAuthService {
       throw new ApiError(401, "Invalid refresh token");
     }
 
-    const newAccessToken = user.generateAccessToken();
-    const newRefreshToken = user.generateRefreshToken();
+    const newAccessToken = await user.generateAccessToken();
+    const newRefreshToken = await user.generateRefreshToken();
 
     user.refreshToken = newRefreshToken;
     await user.save();
@@ -161,12 +170,12 @@ class MongoAuthService implements IAuthService {
       throw new ApiError(400, "OTP not found. Please request a new one.");
     }
 
-    if (user.otp !== otp) {
-      throw new ApiError(400, "Invalid OTP.");
-    }
-
     if (user.otpExpiry < new Date()) {
       throw new ApiError(400, "OTP expired. Please request a new one.");
+    }
+
+    if (user.otp !== otp) {
+      throw new ApiError(400, "Invalid OTP.");
     }
 
     user.isVerified = true;
@@ -193,20 +202,7 @@ class MongoAuthService implements IAuthService {
     user.otpExpiry = otpExpiry;
     await user.save();
 
-    await sendEmail(
-      email,
-      "Your new RepUp OTP",
-      `<div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; padding: 32px; border: 1px solid #e0e0e0; border-radius: 8px;">
-  <h2 style="color: #111;">Your new OTP</h2>
-  <p style="color: #444;">You requested a new OTP for your RepUp account. Here it is:</p>
-  <div style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #111; background: #f5f5f5; padding: 16px; text-align: center; border-radius: 6px; margin: 24px 0;">
-    ${otp}
-  </div>
-  <p style="color: #888; font-size: 13px;">This OTP expires in <strong>10 minutes</strong>. Do not share it with anyone.</p>
-  <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 24px 0;">
-  <p style="color: #aaa; font-size: 12px;">If you didn't request this, ignore this email.</p>
-</div>`,
-    );
+    await sendEmail(email, "Your new RepUp OTP", getResendOtpHtml(otp));
   };
 
   forgotPassword = async (email: string): Promise<void> => {
@@ -214,6 +210,13 @@ class MongoAuthService implements IAuthService {
 
     if (!user) {
       throw new ApiError(404, "User not found.");
+    }
+
+    if (!user.isVerified) {
+      throw new ApiError(
+        403,
+        "Email not verified. Please verify your account first.",
+      );
     }
 
     const token = crypto.randomBytes(32).toString("hex");
@@ -229,16 +232,7 @@ class MongoAuthService implements IAuthService {
     await sendEmail(
       email,
       "Reset your RepUp password",
-      `<div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; padding: 32px; border: 1px solid #e0e0e0; border-radius: 8px;">
-    <h2 style="color: #111;">Reset your password</h2>
-     <p style="color: #444;">We received a request to reset your RepUp password. Click the button below to proceed.</p>
-    <div style="text-align: center; margin: 32px 0;">
-    <a href="${resetLink}" style="background: #111; color: #fff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-size: 15px; font-weight: bold;">Reset Password</a>
-     </div>
-    <p style="color: #888; font-size: 13px;">This link expires in <strong>15 minutes</strong>. If you didn't request a password reset, ignore this email.</p>
-    <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 24px 0;">
-     <p style="color: #aaa; font-size: 12px;">For security, never share this link with anyone.</p>
-    </div>`,
+      getResetPasswordHtml(resetLink),
     );
   };
 
@@ -258,6 +252,7 @@ class MongoAuthService implements IAuthService {
     user.password = newPassword;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpiry = undefined;
+    user.refreshToken = undefined;
     await user.save();
   };
 }
