@@ -82,6 +82,7 @@ function ActiveWorkout() {
 
   const [elapsed, setElapsed] = useState(0);
   const [showPicker, setShowPicker] = useState(false);
+  const [pickerClosing, setPickerClosing] = useState(false);
   const [confirmDiscard, setConfirmDiscard] = useState(false);
   const [confirmFinish, setConfirmFinish] = useState(false);
   const [isDiscarding, setIsDiscarding] = useState(false);
@@ -231,7 +232,11 @@ function ActiveWorkout() {
       return next;
     });
 
-    setShowPicker(false);
+    setPickerClosing(true);
+    setTimeout(() => {
+      setShowPicker(false);
+      setPickerClosing(false);
+    }, 250);
   };
 
   // incomplete count
@@ -335,26 +340,6 @@ function ActiveWorkout() {
   }
 
   if (!session) return null;
-
-  if (showPicker) {
-    return (
-      <div className="fixed inset-0 z-[60] bg-[#0b0b10]">
-        <div
-          className="h-full max-w-[520px] mx-auto px-5"
-          style={{
-            paddingTop: "calc(16px + env(safe-area-inset-top))",
-            paddingBottom: "calc(24px + env(safe-area-inset-bottom))",
-          }}
-        >
-          <ExercisePicker
-            alreadyAddedIds={addedIds}
-            onAdd={handleAddExercises}
-            onBack={() => setShowPicker(false)}
-          />
-        </div>
-      </div>
-    );
-  }
 
   const totalSets = session.exercises.reduce((s, e) => s + e.sets.length, 0);
   const totalVol = session.exercises.reduce(
@@ -1076,6 +1061,46 @@ function ActiveWorkout() {
                 {isCompleting ? "Finishing…" : "Finish Anyway"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* exercise picker sheet */}
+      {showPicker && (
+        <div
+          onClick={() => {
+            setPickerClosing(true);
+            setTimeout(() => {
+              setShowPicker(false);
+              setPickerClosing(false);
+            }, 250);
+          }}
+          className={`fixed inset-0 z-[60] flex flex-col justify-end bg-black/60 backdrop-blur-sm transition-opacity duration-250 ${pickerClosing ? "opacity-0" : "opacity-100"}`}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-[520px] mx-auto bg-[#0d0d12] border-t border-l border-r border-[#1e1e28] rounded-t-[28px] px-5 pb-[90px] max-h-[90vh] flex flex-col"
+            style={{
+              animation: pickerClosing
+                ? "sheetDown 0.25s ease-in forwards"
+                : "sheetUp 0.34s cubic-bezier(0.22, 1.08, 0.36, 1)",
+            }}
+          >
+            {/* Handle */}
+            <div className="flex justify-center pt-[14px] pb-2 shrink-0">
+              <div className="w-10 h-1 rounded-full bg-[#2a2a36]" />
+            </div>
+            <ExercisePicker
+              alreadyAddedIds={addedIds}
+              onAdd={handleAddExercises}
+              onBack={() => {
+                setPickerClosing(true);
+                setTimeout(() => {
+                  setShowPicker(false);
+                  setPickerClosing(false);
+                }, 250);
+              }}
+            />
           </div>
         </div>
       )}
