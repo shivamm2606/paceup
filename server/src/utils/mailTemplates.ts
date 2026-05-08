@@ -9,7 +9,7 @@ const getVerifyEmailHtml = (otp: string) => `
   <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 24px 0;">
   <p style="color: #aaa; font-size: 12px;">If you didn't create a RepUp account, ignore this email.</p>
 </div>`;
- 
+
 const getResendOtpHtml = (otp: string) => `
 <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; padding: 32px; border: 1px solid #e0e0e0; border-radius: 8px;">
   <h2 style="color: #111;">Your new OTP</h2>
@@ -21,7 +21,7 @@ const getResendOtpHtml = (otp: string) => `
   <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 24px 0;">
   <p style="color: #aaa; font-size: 12px;">If you didn't request this, ignore this email.</p>
 </div>`;
- 
+
 const getResetPasswordHtml = (resetLink: string) => `
 <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; padding: 32px; border: 1px solid #e0e0e0; border-radius: 8px;">
   <h2 style="color: #111;">Reset your password</h2>
@@ -34,8 +34,4 @@ const getResetPasswordHtml = (resetLink: string) => `
   <p style="color: #aaa; font-size: 12px;">For security, never share this link with anyone.</p>
 </div>`;
 
-export {
-  getVerifyEmailHtml,
-  getResendOtpHtml,
-  getResetPasswordHtml,
-};
+export { getVerifyEmailHtml, getResendOtpHtml, getResetPasswordHtml };
