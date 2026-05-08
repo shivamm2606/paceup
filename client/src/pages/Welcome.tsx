@@ -16,9 +16,13 @@ function useInstallPrompt() {
       e.preventDefault();
       setPrompt(e as BeforeInstallPromptEvent);
     };
+    const installedHandler = () => setInstalled(true);
     window.addEventListener("beforeinstallprompt", handler);
-    window.addEventListener("appinstalled", () => setInstalled(true));
-    return () => window.removeEventListener("beforeinstallprompt", handler);
+    window.addEventListener("appinstalled", installedHandler);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler);
+      window.removeEventListener("appinstalled", installedHandler);
+    };
   }, []);
 
   const install = async () => {
@@ -32,8 +36,39 @@ function useInstallPrompt() {
   return { canInstall: !!prompt, install, installed };
 }
 
+function isStandalonePwa() {
+  const iosStandalone =
+    "standalone" in window.navigator &&
+    (window.navigator as Navigator & { standalone?: boolean }).standalone ===
+      true;
+
+  return (
+    window.matchMedia("(display-mode: standalone)").matches || iosStandalone
+  );
+}
+
+function useStandalonePwa() {
+  const [standalone, setStandalone] = useState(isStandalonePwa);
+
+  useEffect(() => {
+    const media = window.matchMedia("(display-mode: standalone)");
+    const update = () => setStandalone(isStandalonePwa());
+
+    media.addEventListener("change", update);
+    window.addEventListener("appinstalled", update);
+
+    return () => {
+      media.removeEventListener("change", update);
+      window.removeEventListener("appinstalled", update);
+    };
+  }, []);
+
+  return standalone;
+}
+
 function DesktopView() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { canInstall, install, installed } = useInstallPrompt();
   const appUrl = window.location.origin;
 
   useEffect(() => {
@@ -45,6 +80,12 @@ function DesktopView() {
       });
     }
   }, [appUrl]);
+
+  const footerLinks = [
+    { label: "Features", href: "#features" },
+    { label: "Install", href: "#install" },
+    { label: "GitHub", href: "https://github.com/shivamm2606/rep-up" },
+  ];
 
   const features = [
     {
@@ -116,7 +157,10 @@ function DesktopView() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#080809] text-white font-[DM_Sans,sans-serif] relative overflow-hidden">
+    <div
+      id="top"
+      className="min-h-screen bg-[#080809] text-white font-[DM_Sans,sans-serif] relative overflow-hidden"
+    >
       {/* Grain overlay */}
       <div
         className="fixed inset-0 pointer-events-none z-0"
@@ -131,10 +175,23 @@ function DesktopView() {
 
       <div className="relative z-[1]">
         {/* Nav */}
-        <nav className="flex items-center justify-between px-16 py-4 border-b border-[#1a1a1f]">
-          <span className="font-[Bebas_Neue,sans-serif]! text-[2rem] tracking-[0.05em]">
-            Rep<span className="text-[#3da1d4]">Up</span>
-          </span>
+        <nav className="flex items-center justify-between gap-4 px-5 py-4 border-b border-[#1a1a1f] sm:px-8 lg:px-16">
+          <a
+            href="#top"
+            className="group flex items-center gap-2.5 text-white no-underline"
+            aria-label="RepUp home"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-[12px] border border-[rgba(61,161,212,0.24)] bg-[rgba(61,161,212,0.08)] shadow-[0_0_28px_rgba(61,161,212,0.08)]">
+              <img
+                src="/repup-icon-192.png"
+                alt="RepUp Logo"
+                className="w-[19px] h-[19px] object-contain"
+              />
+            </span>
+            <span className="font-[Sora,sans-serif] text-[1.3rem] font-extrabold leading-none tracking-normal sm:text-[1.45rem]">
+              Rep<span className="text-[#3da1d4]">Up</span>
+            </span>
+          </a>
           <a
             href="https://github.com/shivamm2606/rep-up"
             target="_blank"
@@ -149,7 +206,7 @@ function DesktopView() {
         </nav>
 
         {/* Hero */}
-        <section className="grid grid-cols-2 gap-12 items-start pt-8 px-16 pb-4 max-w-[1200px] mx-auto">
+        <section className="grid grid-cols-1 gap-10 items-start pt-8 px-5 pb-4 max-w-[1200px] mx-auto sm:px-8 lg:grid-cols-2 lg:gap-12 lg:px-16">
           {/* Left */}
           <div>
             <div className="inline-flex items-center gap-2 bg-[rgba(71,184,255,0.08)] border border-[rgba(71,184,255,0.2)] rounded-full px-4 py-1.5 text-[0.78rem] text-[#3da1d4] tracking-[0.1em] uppercase mb-8 font-semibold">
@@ -157,7 +214,7 @@ function DesktopView() {
               Progressive Web App
             </div>
 
-            <h1 className="font-[Bebas_Neue,sans-serif]! text-[clamp(4rem,7vw,7rem)] leading-[0.9] mb-4 tracking-[0.02em]">
+            <h1 className="font-[Bebas_Neue,sans-serif]! text-[clamp(3.5rem,18vw,7rem)] leading-[0.9] mb-4 tracking-[0.02em] lg:text-[clamp(4rem,7vw,7rem)]">
               TRACK EVERY
               <br />
               <span className="text-[#3da1d4]">REP.</span>
@@ -165,14 +222,14 @@ function DesktopView() {
               GET STRONGER.
             </h1>
 
-            <p className="text-[rgba(255,255,255,0.55)] text-[1.1rem] leading-[1.7] max-w-[42ch] mb-12">
+            <p className="text-[rgba(255,255,255,0.55)] text-[1rem] leading-[1.7] max-w-[42ch] mb-8 sm:text-[1.1rem] lg:mb-12">
               RepUp is a mobile-first gym tracker built for lifters. Log
               workouts, monitor progress, and hit your goals - one session at a
               time.
             </p>
 
             {/* Mobile notice + QR */}
-            <div className="bg-[#111113] border border-[#222228] rounded-2xl px-8 py-6 flex items-center gap-8">
+            <div className="bg-[#111113] border border-[#222228] rounded-2xl px-5 py-5 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:px-8 sm:py-6 sm:gap-8">
               <div>
                 <p className="text-[rgba(255,255,255,0.9)] font-semibold mb-1.5 text-[0.95rem]">
                   Built for mobile
@@ -181,8 +238,16 @@ function DesktopView() {
                   Open on your phone or scan the QR code to install RepUp as an
                   app.
                 </p>
+                {canInstall && !installed && (
+                  <button
+                    onClick={install}
+                    className="mt-4 rounded-full bg-[#3da1d4] px-5 py-2.5 text-[0.78rem] font-bold text-white shadow-[0_0_24px_rgba(71,184,255,0.18)] transition-colors duration-200 hover:bg-[#4db5e6]"
+                  >
+                    Install App
+                  </button>
+                )}
               </div>
-              <div className="shrink-0 p-1.5 bg-white rounded-xl">
+              <div className="shrink-0 p-1.5 bg-white rounded-xl self-center sm:self-auto">
                 <canvas ref={canvasRef} className="block rounded-md" />
               </div>
             </div>
@@ -190,7 +255,7 @@ function DesktopView() {
 
           {/* Right - phone mockup */}
           <div className="flex justify-center">
-            <div className="w-[260px] h-[520px] rounded-[36px] border-2 border-[#222228] overflow-hidden relative bg-[#080809] shadow-[0_30px_60px_rgba(0,0,0,0.5),0_0_0_1px_#111113]">
+            <div className="w-[240px] h-[480px] rounded-[36px] border-2 border-[#222228] overflow-hidden relative bg-[#080809] shadow-[0_30px_60px_rgba(0,0,0,0.5),0_0_0_1px_#111113] sm:w-[260px] sm:h-[520px]">
               {/* Notch */}
               <div className="absolute top-[14px] left-1/2 -translate-x-1/2 w-[80px] h-[22px] bg-[#080809] rounded-full z-10 border-[1.5px] border-[#222228]" />
               <div
@@ -216,7 +281,10 @@ function DesktopView() {
         </section>
 
         {/* Install as App */}
-        <section className="pt-8 px-16 pb-16 max-w-[1200px] mx-auto">
+        <section
+          id="install"
+          className="pt-8 px-5 pb-12 max-w-[1200px] mx-auto sm:px-8 lg:px-16 lg:pb-16"
+        >
           <p className="text-[rgba(255,255,255,0.3)] text-[0.75rem] tracking-[0.2em] uppercase mb-2 font-semibold">
             Install as app
           </p>
@@ -224,11 +292,11 @@ function DesktopView() {
             RepUp works like a native app - no app store needed. Here's how to
             install it:
           </p>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
             {installSteps.map((p) => (
               <div
                 key={p.platform}
-                className="bg-[#111113] border border-[#222228] rounded-2xl p-7 transition-colors duration-200 hover:border-[rgba(71,184,255,0.25)]"
+                className="bg-[#111113] border border-[#222228] rounded-2xl p-5 transition-colors duration-200 hover:border-[rgba(71,184,255,0.25)] sm:p-7"
               >
                 <div className="flex items-center gap-2.5 mb-4">
                   <span className="text-2xl">{p.icon}</span>
@@ -255,15 +323,18 @@ function DesktopView() {
         </section>
 
         {/* Features grid */}
-        <section className="pt-8 px-16 pb-16 max-w-[1200px] mx-auto">
+        <section
+          id="features"
+          className="pt-8 px-5 pb-12 max-w-[1200px] mx-auto sm:px-8 lg:px-16 lg:pb-16"
+        >
           <p className="text-[rgba(255,255,255,0.3)] text-[0.75rem] tracking-[0.2em] uppercase mb-8 font-semibold">
             What's inside
           </p>
-          <div className="grid grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
             {features.map((f) => (
               <div
                 key={f.title}
-                className="bg-[#111113] border border-[#222228] rounded-2xl p-7 transition-all duration-200 cursor-default hover:border-[rgba(71,184,255,0.3)] hover:-translate-y-1"
+                className="bg-[#111113] border border-[#222228] rounded-2xl p-5 transition-all duration-200 cursor-default hover:border-[rgba(71,184,255,0.3)] hover:-translate-y-1 sm:p-7"
               >
                 <span className="text-[1.75rem] block mb-4">{f.icon}</span>
                 <p className="font-bold text-[0.95rem] mb-2 text-white">
@@ -278,16 +349,16 @@ function DesktopView() {
         </section>
 
         {/* Upcoming features */}
-        <section className="px-16 pb-16 max-w-[1200px] mx-auto">
+        <section className="px-5 pb-12 max-w-[1200px] mx-auto sm:px-8 lg:px-16 lg:pb-16">
           <div className="inline-flex items-center gap-2 bg-[rgba(245,180,60,0.08)] border border-[rgba(245,180,60,0.2)] rounded-full px-4 py-1.5 text-[0.75rem] text-[#f5b43c] tracking-[0.15em] uppercase mb-8 font-semibold">
             <span className="w-1.5 h-1.5 rounded-full bg-[#f5b43c] animate-[pulse_2s_infinite]" />
             Coming Soon
           </div>
-          <div className="grid grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
             {upcoming.map((f) => (
               <div
                 key={f.title}
-                className="bg-[#111113] border border-[#1a1a1f] rounded-2xl p-7 relative overflow-hidden transition-all duration-200 cursor-default hover:border-[rgba(245,180,60,0.25)] hover:-translate-y-1"
+                className="bg-[#111113] border border-[#1a1a1f] rounded-2xl p-5 relative overflow-hidden transition-all duration-200 cursor-default hover:border-[rgba(245,180,60,0.25)] hover:-translate-y-1 sm:p-7"
               >
                 <span className="text-[1.75rem] block mb-4 grayscale-[0.3]">
                   {f.icon}
@@ -304,26 +375,52 @@ function DesktopView() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-[#1a1a1f] px-16 py-8 flex items-center justify-between">
-          <span className="font-[Bebas_Neue,sans-serif]! text-[1.25rem] tracking-[0.05em] opacity-40">
-            Rep<span className="text-[#3da1d4]">Up</span>
-          </span>
-          <p className="text-[rgba(255,255,255,0.25)] text-[0.8rem]">
-            Built by{" "}
-            <a
-              href="https://github.com/shivamm2606"
-              target="_blank"
-              rel="noreferrer"
-              className="text-[rgba(255,255,255,0.5)] no-underline"
-            >
-              Shivam
-            </a>
-          </p>
+        <footer className="border-t border-[#1a1a1f] px-5 py-8 sm:px-8 lg:px-16">
+          <div className="mx-auto grid max-w-[1200px] gap-8 md:grid-cols-[1.4fr_1fr_1fr]">
+            <div>
+              <a
+                href="#top"
+                className="mb-3 inline-flex items-center gap-2.5 text-white no-underline"
+                aria-label="RepUp home"
+              >
+                <span className="flex h-8 w-8 items-center justify-center rounded-[10px] border border-[rgba(61,161,212,0.2)] bg-[rgba(61,161,212,0.07)]">
+                  <img
+                    src="/repup-icon-192.png"
+                    alt="RepUp Logo"
+                    className="w-[17px] h-[17px] object-contain"
+                  />
+                </span>
+                <span className="font-[Sora,sans-serif] text-[1.15rem] font-extrabold leading-none tracking-normal">
+                  Rep<span className="text-[#3da1d4]">Up</span>
+                </span>
+              </a>
+              <p className="max-w-[34ch] text-[0.86rem] leading-[1.7] text-[rgba(255,255,255,0.42)]">
+                Mobile-first workout tracking for sets, templates, bodyweight,
+                and calorie goals.
+              </p>
+            </div>
+
+            <div>
+              <p className="mb-3 text-[0.72rem] font-bold uppercase tracking-[0.18em] text-[rgba(255,255,255,0.28)]">
+                Essential
+              </p>
+              <div className="flex flex-col gap-2 text-[0.84rem] text-[rgba(255,255,255,0.44)]">
+                <span>Installable PWA</span>
+                <span>Works on iOS and Android</span>
+                <span>No app store required</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mx-auto mt-8 flex max-w-[1200px] flex-col gap-2 border-t border-[#15151b] pt-5 text-[0.76rem] text-[rgba(255,255,255,0.26)] sm:flex-row sm:items-center sm:justify-between">
+            <span>Built by Shivam.</span>
+            <span>Track hard. Recover well. Repeat.</span>
+          </div>
         </footer>
       </div>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Sora:wght@700;800&display=swap');
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.3; }
@@ -405,13 +502,7 @@ function MobileLanding() {
 }
 
 export default function LandingPage() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const isPwaStandalone = useStandalonePwa();
 
-  useEffect(() => {
-    const handler = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
-  }, []);
-
-  return isMobile ? <MobileLanding /> : <DesktopView />;
+  return isPwaStandalone ? <MobileLanding /> : <DesktopView />;
 }
