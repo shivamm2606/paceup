@@ -52,15 +52,13 @@ class MongoAuthService implements IAuthService {
       throw new ApiError(500, "User creation failed.");
     }
 
-    try {
-      await sendEmail(
-        email,
-        "Verify your RepUp account",
-        getVerifyEmailHtml(otp),
-      );
-    } catch {
-      throw new ApiError(500, "Failed to send OTP email. Please try again.");
-    }
+    sendEmail(
+      email,
+      "Verify your RepUp account",
+      getVerifyEmailHtml(otp),
+    ).catch((err) => {
+      console.error("Failed to send OTP email:", err);
+    });
 
     return {
       _id: newUser._id.toString(),
@@ -202,7 +200,11 @@ class MongoAuthService implements IAuthService {
     user.otpExpiry = otpExpiry;
     await user.save();
 
-    await sendEmail(email, "Your new RepUp OTP", getResendOtpHtml(otp));
+    sendEmail(email, "Your new RepUp OTP", getResendOtpHtml(otp)).catch(
+      (err) => {
+        console.error("Failed to resend OTP email:", err);
+      },
+    );
   };
 
   forgotPassword = async (email: string): Promise<void> => {
@@ -229,11 +231,13 @@ class MongoAuthService implements IAuthService {
 
     const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
 
-    await sendEmail(
+    sendEmail(
       email,
       "Reset your RepUp password",
       getResetPasswordHtml(resetLink),
-    );
+    ).catch((err) => {
+      console.error("Failed to send reset password email:", err);
+    });
   };
 
   resetPassword = async (token: string, newPassword: string): Promise<void> => {
