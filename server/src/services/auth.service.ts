@@ -74,7 +74,7 @@ class MongoAuthService implements IAuthService {
   loginUser = async (dto: LoginDto): Promise<LoginResult> => {
     const { email, password } = dto;
 
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email }).select("+password +otpExpiry");
 
     if (!user) {
       throw new ApiError(400, "Invalid email or password");
@@ -87,6 +87,16 @@ class MongoAuthService implements IAuthService {
     }
 
     if (!user.isVerified) {
+      if (!user.otpExpiry || user.otpExpiry < new Date()) {
+        const otp = generateOTP();
+        user.otp = otp;
+        user.otpExpiry = getOTPExpiry();
+        await user.save();
+
+        sendEmail(email, "Your new RepUp OTP", getResendOtpHtml(otp)).catch(
+          (err) => console.error("Failed to auto-resend OTP on login:", err),
+        );
+      }
       throw new ApiError(403, "Email not verified");
     }
 
