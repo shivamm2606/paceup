@@ -3,7 +3,7 @@ import {
   IAuthService,
   RegisterDto,
   LoginDto,
-  RegisterResut,
+  RegisterResult,
   LoginResult,
   RefreshTokenResult,
 } from "../types/auth.types.js";
@@ -19,7 +19,7 @@ import {
 } from "../utils/mailTemplates.js";
 
 class MongoAuthService implements IAuthService {
-  registerUser = async (dto: RegisterDto): Promise<RegisterResut> => {
+  registerUser = async (dto: RegisterDto): Promise<RegisterResult> => {
     const { name, email, username, password } = dto;
 
     const existingUsers = await User.find({ $or: [{ email }, { username }] });
@@ -93,9 +93,11 @@ class MongoAuthService implements IAuthService {
         user.otpExpiry = getOTPExpiry();
         await user.save();
 
-        sendEmail(email, "Your new RepUp OTP", getResendOtpHtml(otp)).catch(
-          (err) => console.error("Failed to auto-resend OTP on login:", err),
-        );
+        try {
+          await sendEmail(email, "Your new RepUp OTP", getResendOtpHtml(otp));
+        } catch (error) {
+          console.error("Failed to auto-resend OTP on login:", error);
+        }
       }
       throw new ApiError(403, "Email not verified");
     }

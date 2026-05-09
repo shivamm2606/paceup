@@ -4,7 +4,7 @@ import type { IUserInfo } from "./user.types.js";
 export type { RegisterDto, LoginDto };
 
 export interface IAuthService {
-  registerUser(dto: RegisterDto): Promise<RegisterResut>;
+  registerUser(dto: RegisterDto): Promise<RegisterResult>;
   loginUser(dto: LoginDto): Promise<LoginResult>;
   logoutUser(userId: string): Promise<void>;
   refreshToken(incomingRefreshToken: string): Promise<RefreshTokenResult>;
@@ -14,14 +14,14 @@ export interface IAuthService {
   resetPassword(token: string, newPassword: string): Promise<void>;
 }
 
-export interface RegisterResut {
+export interface RegisterResult {
   _id: string;
   username: string;
   name: string;
   email: string;
 }
 
-export interface LoginUser extends RegisterResut {
+export interface LoginUser extends RegisterResult {
   userInfo?: IUserInfo;
 }
 
@@ -31,7 +31,7 @@ export interface LoginResult {
   refreshToken: string;
 }
 export interface RefreshTokenResult {
-  user: RegisterResut;
+  user: RegisterResult;
   accessToken: string;
   refreshToken: string;
 }
