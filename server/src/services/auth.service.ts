@@ -58,9 +58,13 @@ class MongoAuthService implements IAuthService {
         "Verify your RepUp account",
         getVerifyEmailHtml(otp),
       );
-    } catch (error) {
+    } catch (error: any) {
       await User.findByIdAndDelete(newUser._id);
-      throw new ApiError(500, "Failed to send OTP email. Please try again.");
+      console.error("[ERROR] Failed to send OTP email:", error);
+      throw new ApiError(
+        500,
+        "Failed to send verification email. Please try again.",
+      );
     }
 
     return {
@@ -96,10 +100,13 @@ class MongoAuthService implements IAuthService {
         try {
           await sendEmail(email, "Your new RepUp OTP", getResendOtpHtml(otp));
         } catch (error) {
-          console.error("Failed to auto-resend OTP on login:", error);
+          console.error("[ERROR] Failed to auto-resend OTP on login:", error);
         }
+
+        throw new ApiError(403, "Email not verified. A new OTP has been sent.");
       }
-      throw new ApiError(403, "Email not verified");
+
+      throw new ApiError(403, "Email not verified.");
     }
 
     const accessToken = await user.generateAccessToken();
@@ -211,11 +218,19 @@ class MongoAuthService implements IAuthService {
     const otp = generateOTP();
     const otpExpiry = getOTPExpiry();
 
+    try {
+      await sendEmail(email, "Your new RepUp OTP", getResendOtpHtml(otp));
+    } catch (error: any) {
+      console.error("[ERROR] Failed to resend OTP email:", error);
+      throw new ApiError(
+        500,
+        "Failed to send verification email. Please try again.",
+      );
+    }
+
     user.otp = otp;
     user.otpExpiry = otpExpiry;
     await user.save();
-
-    await sendEmail(email, "Your new RepUp OTP", getResendOtpHtml(otp));
   };
 
   forgotPassword = async (email: string): Promise<void> => {
@@ -236,17 +251,25 @@ class MongoAuthService implements IAuthService {
     const expiry = new Date();
     expiry.setMinutes(expiry.getMinutes() + 15);
 
+    const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
+
+    try {
+      await sendEmail(
+        email,
+        "Reset your RepUp password",
+        getResetPasswordHtml(resetLink),
+      );
+    } catch (error: any) {
+      console.error("[ERROR] Failed to send reset password email:", error);
+      throw new ApiError(
+        500,
+        "Failed to send password reset email. Please try again.",
+      );
+    }
+
     user.resetPasswordToken = token;
     user.resetPasswordExpiry = expiry;
     await user.save();
-
-    const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
-
-    await sendEmail(
-      email,
-      "Reset your RepUp password",
-      getResetPasswordHtml(resetLink),
-    );
   };
 
   resetPassword = async (token: string, newPassword: string): Promise<void> => {
