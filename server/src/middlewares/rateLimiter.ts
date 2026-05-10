@@ -8,7 +8,7 @@ export const globalRateLimiter = rateLimit({
   message: { message: "Too many requests. Please try again later." },
   standardHeaders: true,
   legacyHeaders: false,
-  validate: { xForwardedForHeader: false },
+  validate: { trustProxy: false },
 });
 
 export const loginRateLimiter = rateLimit({
@@ -19,7 +19,7 @@ export const loginRateLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  validate: { xForwardedForHeader: false },
+  validate: { trustProxy: false },
 });
 
 export const otpRateLimiter = rateLimit({
@@ -28,7 +28,7 @@ export const otpRateLimiter = rateLimit({
   message: { message: "Too many attempts. Please try again after 15 minutes." },
   standardHeaders: true,
   legacyHeaders: false,
-  validate: { xForwardedForHeader: false },
+  validate: { trustProxy: false },
 });
 
 export const forgotPasswordRateLimiter = rateLimit({
@@ -37,5 +37,5 @@ export const forgotPasswordRateLimiter = rateLimit({
   message: { message: "Too many requests. Please try again after 15 minutes." },
   standardHeaders: true,
   legacyHeaders: false,
-  validate: { xForwardedForHeader: false },
+  validate: { trustProxy: false },
 });
