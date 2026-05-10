@@ -24,6 +24,22 @@ const GOAL_OPTIONS = [
   { value: "bulk", label: "Bulk" },
 ] as const;
 
+type ActivityLevel =
+  | "sedentary"
+  | "lightly_active"
+  | "moderately_active"
+  | "very_active";
+type Goal = "lose_weight" | "maintain" | "lean_bulk" | "bulk";
+
+type UserInfoData = Partial<{
+  height: number;
+  currentWeight: number;
+  targetWeight: number;
+  dateOfBirth: string;
+  activityLevel: ActivityLevel;
+  goal: Goal;
+}>;
+
 interface Props {
   onClose: () => void;
 }
@@ -52,13 +68,12 @@ export function EditProfileSheet({ onClose }: Props) {
     const d = user?.userInfo?.dateOfBirth;
     return d ? new Date(d).toISOString().slice(0, 10) : "";
   });
-  const [activityLevel, setActivityLevel] = useState(
+  const [activityLevel, setActivityLevel] = useState<ActivityLevel | "">(
     user?.userInfo?.activityLevel ?? "",
   );
-  const [goal, setGoal] = useState(user?.userInfo?.goal ?? "");
+  const [goal, setGoal] = useState<Goal | "">(user?.userInfo?.goal ?? "");
 
   const handleSave = () => {
-    // diff
     const accountData: Record<string, string> = {};
     if (name.trim() && name.trim() !== user?.name)
       accountData.name = name.trim();
@@ -67,7 +82,7 @@ export function EditProfileSheet({ onClose }: Props) {
     if (email.trim() && email.trim() !== user?.email)
       accountData.email = email.trim();
 
-    const infoData: Record<string, number | string> = {};
+    const infoData: UserInfoData = {};
     if (height && parseFloat(height) > 0) infoData.height = parseFloat(height);
     if (currentWeight && parseFloat(currentWeight) > 0)
       infoData.currentWeight = parseFloat(currentWeight);
@@ -78,14 +93,13 @@ export function EditProfileSheet({ onClose }: Props) {
     if (goal) infoData.goal = goal;
 
     if (Object.keys(accountData).length > 0) updateAccount(accountData);
-    if (Object.keys(infoData).length > 0) updateUserInfo(infoData as any);
+    if (Object.keys(infoData).length > 0) updateUserInfo(infoData);
 
     onClose();
   };
 
   return (
     <SheetWrapper title="Edit Profile" subtitle="Settings" onClose={onClose}>
-      {/* Form */}
       <div className="overflow-y-auto flex-1 -mx-1.5 px-1.5 space-y-4">
         <SectionLabel>Account</SectionLabel>
         <FormField
@@ -143,13 +157,13 @@ export function EditProfileSheet({ onClose }: Props) {
         <SelectField
           label="Activity Level"
           value={activityLevel}
-          onChange={setActivityLevel}
+          onChange={(v) => setActivityLevel(v as ActivityLevel | "")}
           options={ACTIVITY_OPTIONS}
         />
         <SelectField
           label="Fitness Goal"
           value={goal}
-          onChange={setGoal}
+          onChange={(v) => setGoal(v as Goal | "")}
           options={GOAL_OPTIONS}
         />
       </div>

@@ -15,8 +15,6 @@ import {
 } from "recharts";
 import type { IBodyweightLog } from "../types/bodyweight.types";
 
-// constants
-
 type WeightUnit = "kg" | "lbs";
 type TimeRange = "1W" | "1M" | "3M" | "6M" | "ALL";
 
@@ -30,7 +28,13 @@ const TIME_RANGES: { key: TimeRange; label: string; days: number }[] = [
   { key: "ALL", label: "All", days: Infinity },
 ];
 
-// helper
+type ChartEntry = { weight: number; label: string; fullDate: string };
+
+interface ChartTooltipProps {
+  active?: boolean;
+  payload?: { payload: ChartEntry }[];
+  displayUnit: string;
+}
 
 function convertWeight(
   weight: number,
@@ -70,8 +74,6 @@ function filterByDays(logs: IBodyweightLog[], days: number) {
   return logs.filter((log) => new Date(log.date) >= cutoff);
 }
 
-// main
-
 function Bodyweight() {
   const navigate = useNavigate();
   const { data: bwData } = useBodyweightHistory(100);
@@ -83,8 +85,7 @@ function Bodyweight() {
   const [timeRange, setTimeRange] = useState<TimeRange>("1M");
   const [deletingEntryId, setDeletingEntryId] = useState<string | null>(null);
 
-  // Data
-  const entries = bwData?.entries ?? [];
+  const entries = useMemo(() => bwData?.entries ?? [], [bwData?.entries]);
   const allLogs = useMemo(() => sortByDateAsc(entries), [entries]);
 
   const days = TIME_RANGES.find((r) => r.key === timeRange)?.days ?? Infinity;
@@ -93,7 +94,7 @@ function Bodyweight() {
     [allLogs, days],
   );
 
-  const chartData = useMemo(
+  const chartData = useMemo<ChartEntry[]>(
     () =>
       filteredLogs.map((log) => ({
         weight: convertWeight(log.weight, log.unit, unit),
@@ -116,7 +117,6 @@ function Bodyweight() {
     ? convertWeight(latestEntry.weight, latestEntry.unit, unit)
     : undefined;
 
-  // Actions
   const handleLog = () => {
     const weight = parseFloat(weightInput);
     if (!weight || weight <= 0) return toast.error("Enter a valid weight");
@@ -136,7 +136,6 @@ function Bodyweight() {
       className="bg-[#0b0b10] bg-[radial-gradient(140%_90%_at_50%_0%,_rgba(70,80,120,0.16),_rgba(11,11,16,0)_55%),linear-gradient(180deg,_rgba(12,12,18,1)_0%,_rgba(10,10,16,1)_100%)] text-[#f4f4f6] min-h-screen"
       style={{ paddingBottom: "calc(82px + env(safe-area-inset-bottom))" }}
     >
-      {/* Header */}
       <div
         className="px-5 pb-2"
         style={{ paddingTop: "calc(24px + env(safe-area-inset-top))" }}
@@ -168,14 +167,12 @@ function Bodyweight() {
       </div>
 
       <div className="space-y-5 px-5 pt-3">
-        {/* Current Weight Hero */}
         <HeroCard
           latestWeight={latestWeight}
           unit={unit}
           weightDelta={weightDelta}
         />
 
-        {/* Chart */}
         <div>
           <div className="flex items-center justify-between mb-3">
             <SectionLabel>Trend</SectionLabel>
@@ -188,10 +185,8 @@ function Bodyweight() {
           <WeightChart chartData={chartData} unit={unit} />
         </div>
 
-        {/* Log Input */}
         <div>
           <SectionLabel>Log Entry</SectionLabel>
-
           <div className="mb-3">
             <SegmentedControl
               options={[
@@ -202,7 +197,6 @@ function Bodyweight() {
               onChange={(key) => setUnit(key as WeightUnit)}
             />
           </div>
-
           <div className="flex gap-2">
             <div className="flex-1 relative">
               <input
@@ -232,7 +226,6 @@ function Bodyweight() {
           </div>
         </div>
 
-        {/* History */}
         <div>
           <SectionLabel>History</SectionLabel>
           <HistoryList
@@ -353,7 +346,13 @@ function DeltaArrow({ delta }: { delta: number }) {
   );
 }
 
-function WeightChart({ chartData, unit }: { chartData: any[]; unit: string }) {
+function WeightChart({
+  chartData,
+  unit,
+}: {
+  chartData: ChartEntry[];
+  unit: string;
+}) {
   if (chartData.length < 2) {
     return (
       <div className="bg-[#121216] border border-[#1a1a20] rounded-[16px] p-4">
@@ -430,7 +429,7 @@ function WeightChart({ chartData, unit }: { chartData: any[]; unit: string }) {
   );
 }
 
-function ChartTooltip({ active, payload, displayUnit }: any) {
+function ChartTooltip({ active, payload, displayUnit }: ChartTooltipProps) {
   if (!active || !payload?.length) return null;
   const data = payload[0].payload;
   return (

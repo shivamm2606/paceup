@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../lib/axios";
 import useAuthStore from "../../store/authStore";
 import { useNavigate } from "react-router-dom";
+import type { AxiosError } from "axios";
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
@@ -24,7 +25,7 @@ export const useLogin = () => {
         navigate("/dashboard", { replace: true });
       }
     },
-    onError: (error: any, variables) => {
+    onError: (error: AxiosError<{ message: string }>, variables) => {
       if (error?.response?.data?.message === "Email not verified") {
         navigate("/verify-otp", { state: { email: variables.email } });
       }
