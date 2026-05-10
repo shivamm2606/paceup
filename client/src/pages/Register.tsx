@@ -154,25 +154,76 @@ function PasswordToggle({
   );
 }
 
-function PasswordHint({ password }: { password: string }) {
-  if (!password) return null;
+const CheckIcon = ({ done }: { done: boolean }) => (
+  <div className="relative w-3 h-3 shrink-0 mt-[1px]">
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      className={`absolute inset-0 transition-all duration-300 ${
+        done ? "scale-50 opacity-0" : "scale-100 opacity-100"
+      }`}
+    >
+      <circle cx="12" cy="12" r="9" stroke="#44445a" strokeWidth="1.8" />
+    </svg>
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      className={`absolute inset-0 transition-all duration-300 delay-75 ${
+        done ? "scale-100 opacity-100" : "scale-50 opacity-0"
+      }`}
+    >
+      <circle cx="12" cy="12" r="10" fill="rgba(71,184,255,0.15)" />
+      <path
+        d="M8 12.5l3 3 5-6"
+        stroke="#3da1d4"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  </div>
+);
 
-  const hint =
-    password.length < 8
-      ? "Must be at least 8 characters"
-      : !/[A-Z]/.test(password)
-        ? "Must contain an uppercase letter"
-        : !/[a-z]/.test(password)
-          ? "Must contain a lowercase letter"
-          : !/[0-9]/.test(password)
-            ? "Must contain a number"
-            : !/[^A-Za-z0-9]/.test(password)
-              ? "Must contain a special character"
-              : null;
+function PasswordValidation({ password, isFocused }: { password: string; isFocused: boolean }) {
+  const requirements = [
+    { label: "At least 8 characters", met: password.length >= 8 },
+    { label: "One uppercase letter", met: /[A-Z]/.test(password) },
+    { label: "One lowercase letter", met: /[a-z]/.test(password) },
+    { label: "One number", met: /[0-9]/.test(password) },
+    { label: "One special character", met: /[^A-Za-z0-9]/.test(password) },
+  ];
 
-  if (!hint) return null;
+  const allMet = requirements.every((r) => r.met);
+  const shouldShow = (isFocused || password.length > 0) && !allMet;
 
-  return <p className="text-[11px] text-[#ef4444] mt-1.5 pl-1">{hint}</p>;
+  return (
+    <div
+      className={`overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        shouldShow ? "max-h-[140px] opacity-100 mt-2" : "max-h-0 opacity-0 mt-0"
+      }`}
+    >
+      <div className="p-2.5 px-3 rounded-[12px] border border-[#1e1e28] bg-[#111116] flex flex-wrap gap-y-2 gap-x-4">
+        {requirements.map((req, i) => (
+          <div key={i} className="flex items-center gap-1.5 w-[calc(50%-1rem)] min-w-[135px]">
+            <CheckIcon done={req.met} />
+            <span
+              className={`text-[11px] font-medium leading-tight tracking-tight transition-colors duration-300 ${
+                req.met
+                  ? "text-[#6b6b80] line-through decoration-[#6b6b80]/50"
+                  : "text-[#d0d0d5]"
+              }`}
+            >
+              {req.label}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function Register() {
@@ -184,6 +235,7 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
 
@@ -285,6 +337,8 @@ function Register() {
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={setPassword}
+            onFocus={() => setIsPasswordFocused(true)}
+            onBlur={() => setIsPasswordFocused(false)}
             placeholder="Password"
             rightAction={
               <PasswordToggle
@@ -293,7 +347,7 @@ function Register() {
               />
             }
           />
-          <PasswordHint password={password} />
+          <PasswordValidation password={password} isFocused={isPasswordFocused} />
         </div>
 
         <AuthInput

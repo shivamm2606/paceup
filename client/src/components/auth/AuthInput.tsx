@@ -8,6 +8,8 @@ interface AuthInputProps {
   prefix?: React.ReactNode;
   className?: string;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 export function AuthInput({
@@ -20,6 +22,8 @@ export function AuthInput({
   prefix,
   className = "",
   onKeyDown,
+  onFocus,
+  onBlur,
 }: AuthInputProps) {
   return (
     <div className="relative">
@@ -36,6 +40,8 @@ export function AuthInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}
+        onFocus={onFocus}
+        onBlur={onBlur}
         placeholder={placeholder}
         className={`w-full bg-[#111116] border border-[#1e1e28] text-[#f0f0f5] ${prefix ? "pl-[58px]" : "pl-[40px]"} ${rightAction ? "pr-[44px]" : "pr-[14px]"} py-[13px] rounded-[14px] text-[14px] placeholder-[#2e2e3a] focus:outline-none focus:border-[rgba(71,184,255,0.45)] focus:bg-[#12121a] transition-all duration-150 ${className}`}
       />
