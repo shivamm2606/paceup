@@ -2,6 +2,8 @@ import MongoAuthService from "../services/auth.service.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const cookieOptions: {
   httpOnly: boolean;
   secure: boolean;
@@ -9,8 +11,8 @@ const cookieOptions: {
   maxAge: number;
 } = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
   maxAge: 1000 * 60 * 60 * 24 * 7,
 };
 

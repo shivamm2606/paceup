@@ -17,17 +17,29 @@ dotenv.config();
 
 const app = express();
 
-app.set("trust proxy", 1);
+app.set("trust proxy", true);
 
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(globalRateLimiter);
+
+const allowedOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(",")
+  : [];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
+
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
