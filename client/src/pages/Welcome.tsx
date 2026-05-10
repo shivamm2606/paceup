@@ -438,7 +438,7 @@ function MobileLanding() {
   const { canInstall, install, installed } = useInstallPrompt();
 
   return (
-    <div className="h-svh w-full overflow-hidden bg-black relative font-[DM_Sans,sans-serif]">
+    <div className="min-h-[100dvh] w-full overflow-hidden bg-black relative font-[DM_Sans,sans-serif]">
       <div
         className="absolute inset-0 bg-cover bg-[center_top]"
         style={{

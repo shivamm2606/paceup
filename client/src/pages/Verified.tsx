@@ -19,7 +19,7 @@ function Verified() {
   const progress = ((REDIRECT_SECONDS - countdown) / REDIRECT_SECONDS) * 100;
 
   return (
-    <div className="min-h-[100svh] bg-[#08080c] text-[#f0f0f5] px-5 relative overflow-hidden flex items-center justify-center">
+    <div className="min-h-[100dvh] bg-[#08080c] text-[#f0f0f5] px-5 relative overflow-hidden flex items-center justify-center">
       {/* bg */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-[-80px] left-1/2 -translate-x-1/2 w-[500px] h-[280px] rounded-full bg-[rgba(71,184,255,0.06)] blur-[90px]" />

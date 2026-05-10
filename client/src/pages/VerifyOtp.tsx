@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getErrorMessage } from "../utils/getErrorMessage";
 import { useVerifyOtp } from "../hooks/auth/useVerifyOtp";
@@ -43,6 +43,7 @@ function VerifyOtp() {
   const [resendSuccess, setResendSuccess] = useState(false);
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const hasSubmitted = useRef(false);
 
   const location = useLocation();
   const email: string | undefined = location.state?.email;
@@ -64,10 +65,23 @@ function VerifyOtp() {
   const otpValue = otp.join("");
   const isComplete = otp.every((d) => d !== "");
 
+  const handleSubmit = useCallback(() => {
+    if (!email || !isComplete || isPending) return;
+    setResendSuccess(false);
+    verifyOtp({ email, otp: otpValue });
+  }, [email, isComplete, isPending, otpValue, verifyOtp]);
+
   useEffect(() => {
-    if (isComplete && !isPending) handleSubmit();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [otpValue]);
+    if (isComplete && !isPending && !hasSubmitted.current) {
+      hasSubmitted.current = true;
+      const timeout = setTimeout(() => handleSubmit(), 0);
+      return () => clearTimeout(timeout);
+    }
+  }, [isComplete, isPending, handleSubmit]);
+
+  useEffect(() => {
+    if (!isComplete) hasSubmitted.current = false;
+  }, [isComplete]);
 
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) {
@@ -108,12 +122,6 @@ function VerifyOtp() {
       inputRefs.current[index - 1]?.focus();
     if (e.key === "ArrowRight" && index < OTP_LENGTH - 1)
       inputRefs.current[index + 1]?.focus();
-  };
-
-  const handleSubmit = () => {
-    if (!email || !isComplete || isPending) return;
-    setResendSuccess(false);
-    verifyOtp({ email, otp: otpValue });
   };
 
   const handleResend = () => {
