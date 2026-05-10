@@ -175,11 +175,11 @@ function DesktopView() {
             className="group flex items-center gap-2.5 text-white no-underline"
             aria-label="RepUp home"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-[12px] border border-[rgba(61,161,212,0.24)] bg-[rgba(61,161,212,0.08)] shadow-[0_0_28px_rgba(61,161,212,0.08)]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-[12px] overflow-hidden">
               <img
                 src="/repup-icon-192.png"
                 alt="RepUp Logo"
-                className="w-[19px] h-[19px] object-contain"
+                className="w-full h-full object-cover"
               />
             </span>
             <span className="font-[Sora,sans-serif] text-[1.3rem] font-extrabold leading-none tracking-normal sm:text-[1.45rem]">
@@ -216,14 +216,23 @@ function DesktopView() {
               GET STRONGER.
             </h1>
 
-            <p className="text-[rgba(255,255,255,0.55)] text-[1rem] leading-[1.7] max-w-[42ch] mb-8 sm:text-[1.1rem] lg:mb-12">
+            <p className="text-[rgba(255,255,255,0.55)] text-[1rem] leading-[1.7] max-w-[42ch] mb-0 sm:mb-8 sm:text-[1.1rem] lg:mb-12">
               RepUp is a mobile-first gym tracker built for lifters. Log
               workouts, monitor progress, and hit your goals - one session at a
               time.
             </p>
 
+            {canInstall && !installed && (
+              <button
+                onClick={install}
+                className="mt-6 sm:hidden w-fit rounded-full bg-[#3da1d4] px-6 py-3 text-[0.85rem] font-bold text-white shadow-[0_0_24px_rgba(71,184,255,0.18)] transition-colors duration-200 hover:bg-[#4db5e6]"
+              >
+                Install App
+              </button>
+            )}
+
             {/* Mobile notice + QR */}
-            <div className="bg-[#111113] border border-[#222228] rounded-2xl px-5 py-5 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:px-8 sm:py-6 sm:gap-8">
+            <div className="hidden sm:flex bg-[#111113] border border-[#222228] rounded-2xl px-5 py-5 flex-col items-start gap-5 sm:flex-row sm:items-center sm:px-8 sm:py-6 sm:gap-8">
               <div>
                 <p className="text-[rgba(255,255,255,0.9)] font-semibold mb-1.5 text-[0.95rem]">
                   Built for mobile
@@ -255,7 +264,7 @@ function DesktopView() {
               <div
                 className="absolute inset-0 bg-cover bg-center"
                 style={{
-                  backgroundImage: `url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80')`,
+                  backgroundImage: `url('/welcome-bg.png')`,
                 }}
               />
               <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.1)_40%,rgba(0,0,0,0.88)_100%)]" />
@@ -377,11 +386,11 @@ function DesktopView() {
                 className="mb-3 inline-flex items-center gap-2.5 text-white no-underline"
                 aria-label="RepUp home"
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-[10px] border border-[rgba(61,161,212,0.2)] bg-[rgba(61,161,212,0.07)]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-[10px] overflow-hidden">
                   <img
                     src="/repup-icon-192.png"
                     alt="RepUp Logo"
-                    className="w-[17px] h-[17px] object-contain"
+                    className="w-full h-full object-cover"
                   />
                 </span>
                 <span className="font-[Sora,sans-serif] text-[1.15rem] font-extrabold leading-none tracking-normal">
@@ -433,7 +442,7 @@ function MobileLanding() {
       <div
         className="absolute inset-0 bg-cover bg-[center_top]"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80')`,
+          backgroundImage: `url('/welcome-bg.png')`,
         }}
       />
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.12)_0%,rgba(0,0,0,0.08)_35%,rgba(0,0,0,0.7)_65%,rgba(0,0,0,0.93)_100%)]" />
