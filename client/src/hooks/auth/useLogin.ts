@@ -26,7 +26,7 @@ export const useLogin = () => {
       }
     },
     onError: (error: AxiosError<{ message: string }>, variables) => {
-      if (error?.response?.data?.message === "Email not verified") {
+      if (error?.response?.data?.message?.includes("Email not verified")) {
         navigate("/verify-otp", { state: { email: variables.email } });
       }
     },

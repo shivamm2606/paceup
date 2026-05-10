@@ -52,20 +52,15 @@ class MongoAuthService implements IAuthService {
       throw new ApiError(500, "User creation failed.");
     }
 
-    try {
-      await sendEmail(
-        email,
-        "Verify your RepUp account",
-        getVerifyEmailHtml(otp),
-      );
-    } catch (error: any) {
-      await User.findByIdAndDelete(newUser._id);
-      console.error("[ERROR] Failed to send OTP email:", error);
-      throw new ApiError(
-        500,
-        "Failed to send verification email. Please try again.",
-      );
-    }
+    // Send email in the background to avoid blocking the registration request
+    sendEmail(
+      email,
+      "Verify your RepUp account",
+      getVerifyEmailHtml(otp)
+    ).catch((error) => {
+      console.error("[ERROR] Failed to send OTP email in background:", error);
+      // We do not delete the user. They can request a new OTP from the UI.
+    });
 
     return {
       _id: newUser._id.toString(),

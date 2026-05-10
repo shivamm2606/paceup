@@ -49,8 +49,10 @@ function VerifyOtp() {
   const email: string | undefined = location.state?.email;
   const navigate = useNavigate();
 
-  const { mutate: verifyOtp, error, isPending } = useVerifyOtp();
-  const { mutate: resendOtp, isPending: isResending } = useResendOtp();
+  const { mutate: verifyOtp, error: verifyError, isPending } = useVerifyOtp();
+  const { mutate: resendOtp, error: resendError, isPending: isResending } = useResendOtp();
+
+  const displayError = verifyError || resendError;
 
   useEffect(() => {
     if (!email) navigate("/register");
@@ -168,7 +170,7 @@ function VerifyOtp() {
         }
       />
 
-      {error && <AuthAlert variant="error" message={getErrorMessage(error)} />}
+      {displayError && <AuthAlert variant="error" message={getErrorMessage(displayError)} />}
       {resendSuccess && (
         <AuthAlert
           variant="success"
