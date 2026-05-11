@@ -4,7 +4,7 @@
 
 # REPUP.
 
-### A workout tracker that actually works at the gym.
+### Every rep counts.
 
 <br />
 

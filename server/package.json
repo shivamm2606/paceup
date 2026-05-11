@@ -1,7 +1,7 @@
 {
   "name": "repup",
   "version": "1.0.0",
-  "description": "RepUp",
+  "description": "RepUp - Every rep counts.",
   "license": "ISC",
   "type": "module",
   "main": "dist/index.js",

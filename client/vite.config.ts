@@ -12,7 +12,7 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["repup-apple-touch-icon.png"],
       manifest: {
-        name: "RepUp - Workout Tracker",
+        name: "RepUp - Every rep counts.",
         short_name: "RepUp",
         description:
           "Track your workouts, build templates, and crush your fitness goals.",
